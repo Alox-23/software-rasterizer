@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra
 LDFLAGS = -lm
 SDL_FLAGS = `pkg-config --cflags --libs sdl2`
 
@@ -9,8 +9,9 @@ SOURCES = src/main.c \
 					src/core/engine.c \
 					src/core/memory.c \
 					src/rendering/rasterizer.c \
-					src/utils/vector.c \
+					src/utils/vec.c \
 					src/utils/float.c \
+					src/utils/trig.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
