@@ -10,6 +10,7 @@ SOURCES = src/main.c \
 					src/core/memory.c \
 					src/rendering/rasterizer.c \
 					src/utils/vector.c \
+					src/utils/float.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
