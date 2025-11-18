@@ -4,41 +4,29 @@
 
 void init_sin_lut(){
   for (int i = 0; i < LUT_SIZE; i++){
-    double angle = (double)i / LUT_SIZE * 2.0 * M_PI;
-    sin_lut[i] = (fixed_t)(sin(angle) * FIXED_SCALE);
+    double angle = (double)i / LUT_SIZE * TWO_PI;
+    sin_lut[i] = (fixed_t)(float_to_fixed(sin(angle))); // store fixed-point floats in the sin_lut array 
   }
 }
 
-fixed_t fixed_sin(fixed_t angle){
-  angle &= FIXED_SCALE - 1;
+fixed_t fixed_sin(fixed_t radians){
+  radians %= TWO_PI_F;
 
-  uint64_t position = ((uint64_t)angle * LUT_SIZE) >> FIXED_SHIFT;
+  uint32_t index = (radians * LUT_SIZE) / TWO_PI_F;
 
-  uint64_t index = position >> FIXED_SHIFT;
-  fixed_t frac = (fixed_t)(position & (FIXED_SCALE - 1));
+  index &= (LUT_MASK);
 
-  //linear interpolation for accuracy
-  fixed_t y0 = sin_lut[index & LUT_MASK];
-  fixed_t y1 = sin_lut[(index + 1) & LUT_MASK];
-
-  fixed_t diff = fixed_sub(y1, y0);
-  fixed_t interp_part = fixed_mul(diff, frac);
-
-  return fixed_add(y0, interp_part);
+  return sin_lut[index];
 }
 
-fixed_t fixed_cos(fixed_t angle){
-  return fixed_sin(angle + (FIXED_SCALE / 4));
+float_t deg_to_rad(float_t deg){
+  return deg * (PI_RATIO); 
 }
 
-fixed_t deg_to_fixed(float_t deg){
-  return float_to_fixed(deg / 360.0f);
+float_t rad_to_deg(float_t rad){
+  return rad / (PI_RATIO); 
 }
 
-fixed_t fixed_sin_deg(float_t deg){
-  return fixed_sin(deg_to_fixed(deg));
-}
-
-fixed_t fixed_cos_deg(float_t deg){
-  return fixed_cos(deg_to_fixed(deg));
+fixed_t fixed_cos(fixed_t radians){
+  return fixed_sin(radians + (FIXED_SCALE / 4));
 }

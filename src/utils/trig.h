@@ -6,18 +6,20 @@
 
 #define LUT_SIZE 512
 #define LUT_MASK (LUT_SIZE - 1)
-#define INDEX_SCALE (LUT_SIZE * FIXED_SCALE)
-#define M_PI 3.14159265359
+#define PI 3.14159265359
+#define TWO_PI (PI * 2)
+#define PI_F (PI * FIXED_SCALE)
+#define TWO_PI_F (fixed_t)(PI * 2 * FIXED_SCALE)
+#define PI_RATIO (PI / 180.f)
 
 static fixed_t sin_lut[LUT_SIZE];
 
 void init_sin_lut();
 
-fixed_t fixed_sin(fixed_t angle);
-fixed_t fixed_cos(fixed_t angle);
+fixed_t fixed_sin(fixed_t radians);
+fixed_t fixed_cos(fixed_t radians);
 
-fixed_t deg_to_fixed(float_t deg);
-fixed_t fixed_sin_deg(float_t deg);
-fixed_t fixed_cos_deg(float_t deg);
+float_t deg_to_rad(float deg);
+float_t rad_to_deg(float rad);
 
 #endif
