@@ -28,5 +28,5 @@ float_t rad_to_deg(float_t rad){
 }
 
 fixed_t fixed_cos(fixed_t radians){
-  return fixed_sin(radians + (FIXED_SCALE / 4));
+  return fixed_sin(radians + HALF_PI_F); // + 0.5pi in fixed format to convert to cos
 }
