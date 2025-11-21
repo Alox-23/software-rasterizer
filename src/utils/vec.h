@@ -5,14 +5,34 @@
 
 //x and v[0] share the same memory location 
 //so they are the same variable that can be assesed by different identifiers
+//w = 0 means its a direction vector 
+//w = 1 means its a point in 3d space
+//so, point - vector = vector
+//and other stuff
 typedef union{
   fixed_t x, y, z, w;
   fixed_t v[4];
 } vec4f_t;
 
-vec4f_t add_vec4f(vec4f_t a, vec4f_t a);
-vec4f_t sub_vec4f(vec4f_t a, vec4f_t a);
-vec4f_t mul_vec4f(vec4f_t a, vec4f_t a);
-vec4f_t scl_vec4f(vec4f_t a, fixed_t a);
+//basic arithmetic
+vec4f_t add_vec4f(vec4f_t a, vec4f_t b); // returns a + b
+vec4f_t sub_vec4f(vec4f_t a, vec4f_t b); // returns a - b 
+vec4f_t mul_vec4f(vec4f_t a, vec4f_t b); // returns a * b
+vec4f_t scl_vec4f(vec4f_t a, fixed_t s); // returns a * s
+
+//complex funcitons
+vec4f_t neg_vec4f(vec4f_t a); // returns -a
+fixed_t dot_vec4f(vec4f_t a, vec4f_t b); // return dot product of a, b
+fixed_t lg2_vec4f(vec4f_t a); // ONLY FOR VECTORS
+vec4f_t nrm_vec4f(vec4f_t a); // ONLY FOR VECTORS
+fixed_t dst_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS
+
+//utility functions
+vec4f_t min_vec4f(vec4f_t a, vec4f_t b); // min of a, b
+vec4f_t max_vec4f(vec4f_t a, vec4f_t b); // max of a, b
+vec4f_t flr_vec4f(vec4f_t a); // floor a
+vec4f_t cil_vec4f(vec4f_t a); // ciel a
+vec4f_t abs_vec4f(vec4f_t a); // abs a
+
 
 #endif

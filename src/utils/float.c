@@ -1,11 +1,11 @@
 #include "float.h"
 
-fixed_t float_to_fixed(float_t n){
+fixed_t float_to_fixed(float n){
   return (fixed_t)(n * FIXED_SCALE);
 }
 
-float_t fixed_to_float(fixed_t n){
-  return (float_t)n / (float_t)FIXED_SCALE;
+float fixed_to_float(fixed_t n){
+  return (float)n / (float)FIXED_SCALE;
 }
 
 int32_t fixed_to_int(fixed_t n){
@@ -43,4 +43,24 @@ fixed_t fixed_min(fixed_t a, fixed_t b){
 
 fixed_t fixed_max(fixed_t a, fixed_t b){
   return (a < b) ? a : b;
+}
+
+fixed_t fixed_ex2(fixed_t a){
+  return fixed_mul(a, a);
+}
+
+fixed_t fixed_flr(fixed_t a){
+  if (a >= 0){
+    return a & ~(FIXED_SCALE - 1);
+  } else {
+    return -fixed_cil(-a);
+  }
+}
+
+fixed_t fixed_cil(fixed_t a){
+  if (a >= 0){
+    return (a + (FIXED_SCALE - 1)) & ~(FIXED_SCALE - 1);
+  } else {
+    return -fixed_flr(-a);
+  }
 }
