@@ -36,14 +36,18 @@ fixed_t fixed_div(fixed_t a, fixed_t b){
 fixed_t fixed_sqrt(fixed_t N){
   if (N <= 0) return 0;
 
-  fixed_t x_n = ONE_F;
+  int P = 31 - __builtin_clz(N);
+  
+  fixed_t x_n = 1 << ((P + FIXED_SHIFT) / 2);
+
+  if (x_n == 0) x_n = ONE_F;
 
   for (int i = 0; i < 4; i++){
     fixed_t N_over_xn = fixed_div(N, x_n);
 
     fixed_t sum = fixed_add(x_n, N_over_xn);
     
-    x_n += (sum >> 1); // half of sum
+    x_n = (sum >> 1); // half of sum
   }
 
   return x_n;
@@ -58,7 +62,7 @@ fixed_t fixed_min(fixed_t a, fixed_t b){
 }
 
 fixed_t fixed_max(fixed_t a, fixed_t b){
-  return (a < b) ? a : b;
+  return (a > b) ? a : b;
 }
 
 fixed_t fixed_ex2(fixed_t a){

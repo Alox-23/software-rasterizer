@@ -11,7 +11,7 @@
 #define MINUS_ONE_F (-1 * FIXED_SCALE)
 #define ONE_F (1 * FIXED_SCALE)
 
-typedef int32_t fixed_t;
+typedef int64_t fixed_t;
 
 fixed_t float_to_fixed(float n);
 float fixed_to_float(fixed_t n);
