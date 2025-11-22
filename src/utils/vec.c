@@ -56,7 +56,7 @@ fixed_t dot_vec4f(vec4f_t a, vec4f_t b){
   return result;
 }
 
-fixed_t lg2_vec4f(vec4f_t a){
+fixed_t mag_sq_vec4f(vec4f_t a){
    return fixed_ex2(a.x) + fixed_ex2(a.y) + fixed_ex2(a.z); // ignoire w component
 }
 
@@ -75,7 +75,7 @@ vec4f_t nrm_vec4f(vec4f_t a){
   }
 }
 
-fixed_t dt2_vec4f(vec4f_t a, vec4f_t b){
+fixed_t dst_sq_vec4f(vec4f_t a, vec4f_t b){
   fixed_t dx = fixed_sub(a.x, b.x);
   fixed_t dy = fixed_sub(a.y, b.y);
   fixed_t dz = fixed_sub(a.z, b.z);

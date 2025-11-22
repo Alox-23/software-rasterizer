@@ -21,6 +21,7 @@ fixed_t fixed_add(fixed_t a, fixed_t b);
 fixed_t fixed_sub(fixed_t a, fixed_t b);
 fixed_t fixed_mul(fixed_t a, fixed_t b);
 fixed_t fixed_div(fixed_t a, fixed_t b);
+fixed_t fixed_sqrt(fixed_t N);
 fixed_t fixed_abs(fixed_t n);
 fixed_t fixed_min(fixed_t a, fixed_t b);
 fixed_t fixed_max(fixed_t a, fixed_t b);

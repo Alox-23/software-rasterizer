@@ -33,6 +33,22 @@ fixed_t fixed_div(fixed_t a, fixed_t b){
   return (fixed_t)(temp / b);
 }
 
+fixed_t fixed_sqrt(fixed_t N){
+  if (N <= 0) return 0;
+
+  fixed_t x_n = ONE_F;
+
+  for (int i = 0; i < 4; i++){
+    fixed_t N_over_xn = fixed_div(N, x_n);
+
+    fixed_t sum = fixed_add(x_n, N_over_xn);
+    
+    x_n += (sum >> 1); // half of sum
+  }
+
+  return x_n;
+}
+
 fixed_t fixed_abs(fixed_t n){
   return (n < 0) ? -n : n;
 }

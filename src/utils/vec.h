@@ -23,9 +23,9 @@ vec4f_t scl_vec4f(vec4f_t a, fixed_t s); // returns a * s
 //complex funcitons
 vec4f_t neg_vec4f(vec4f_t a); // returns -a
 fixed_t dot_vec4f(vec4f_t a, vec4f_t b); // return dot product of a, b
-fixed_t lg2_vec4f(vec4f_t a); // ONLY FOR VECTORS
+fixed_t mag_sq_vec4f(vec4f_t a); // ONLY FOR VECTORS, magnitude of a vector squared
 vec4f_t nrm_vec4f(vec4f_t a); // ONLY FOR VECTORS
-fixed_t dst_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS
+fixed_t dst_sq_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS squared
 
 //utility functions
 vec4f_t min_vec4f(vec4f_t a, vec4f_t b); // min of a, b
