@@ -104,7 +104,6 @@ int main(){
   printf("\tEnter value of Aw: ");
   scanf("%f", &float_aw);
 
-
   printf("\tEnter value of Bx: ");
   scanf("%f", &float_bx);
   printf("\tEnter value of By: ");
@@ -116,9 +115,46 @@ int main(){
 
   vec4f_t A = {float_to_fixed(float_ax), float_to_fixed(float_ay), float_to_fixed(float_az), float_to_fixed(float_aw)};
   vec4f_t B = {float_to_fixed(float_bx), float_to_fixed(float_by), float_to_fixed(float_bz), float_to_fixed(float_bw)};
+ 
+  printf("\tYour Vectors:\n");
+  print_vec4f("\t\tA", A);
+  print_vec4f("\t\tB", B);
+
+  printf("\tADDITION\n");
+  vec4f_t sum_of_AB = add_vec4f(A, B);
+  print_vec4f("\t\tA+B", sum_of_AB);
+
+  printf("\tSUBTRACTION\n");
+  vec4f_t sub_of_AB = sub_vec4f(A, B);
+  print_vec4f("\t\tA-B", sub_of_AB);
+
+  printf("\tMULTIPICATION\n");
+  vec4f_t prd_of_AB = mul_vec4f(A, B);
+  print_vec4f("\t\tA*B", prd_of_AB);
+
+  printf("\tSCALE BY 0.5\n");
+  vec4f_t scl_of_A = scl_vec4f(A, float_to_fixed(0.5f));
+  print_vec4f("\t\tA*0.5", scl_of_A);
+
+  printf("\tNEGATE A\n");
+  vec4f_t neg_of_A = neg_vec4f(A);
+  print_vec4f("\t\tA+B", neg_of_A);
+
+  printf("\tDOT PRODUCT OF AB\n");
+  fixed_t dot_of_AB = dot_vec4f(A, B);
+  printf("\t\tAB = %f\n", fixed_to_float(dot_of_AB));
+
+  printf("\tMAGNITUDE OF A\n");
+  fixed_t mag_of_A = mag_sq_vec4f(A);
+  printf("\t\tAm = %f\n", fixed_to_float(mag_of_A));
+
+  printf("\tNORMAL OF A\n");
+  vec4f_t nrm_of_A = nrm_vec4f(A);
+  print_vec4f("\t\tA*0.5", nrm_of_A);
   
-  print_vec4f("A", A);
-  print_vec4f("B", B);
+  printf("\tDIST BETWEEN A AND B\n");
+  fixed_t dist_AB = dst_sq_vec4f(A, B);
+  printf("\t\tA to B = %f\n", fixed_to_float(dist_AB));
 
   return 0;
 }

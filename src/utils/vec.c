@@ -1,7 +1,7 @@
 #include "vec.h"
 
 void print_vec4f(char* name, vec4f_t a){
-  printf("%s = (%3.f, %3.f, %3.f, %3.f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
+  printf("%s = (%f, %f, %f, %f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
 }
 
 // basic arithmetic
@@ -51,7 +51,7 @@ vec4f_t neg_vec4f(vec4f_t a){
 }
 
 fixed_t dot_vec4f(vec4f_t a, vec4f_t b){
-  fixed_t result;
+  fixed_t result = 0;
 
   for (int i = 0; i < 4; i++){
     result = fixed_add(result, fixed_mul(a.v[i], b.v[i])); // result += a[i] * b[i]
