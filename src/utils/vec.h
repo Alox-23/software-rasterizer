@@ -10,9 +10,13 @@
 //so, point - vector = vector
 //and other stuff
 typedef union{
-  fixed_t x, y, z, w;
+  struct{
+    fixed_t x, y, z, w;
+  };
   fixed_t v[4];
 } vec4f_t;
+
+void print_vec4f(char* name, vec4f_t a);
 
 //basic arithmetic
 vec4f_t add_vec4f(vec4f_t a, vec4f_t b); // returns a + b

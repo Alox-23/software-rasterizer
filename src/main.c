@@ -82,6 +82,43 @@ int main(){
   printf("\t\tFIXED: max(%d, %d) = %d\n", a, b, fixed_max(a, b));
   printf("\t\tFLOAT: max(%f, %f) = %f\n", fixed_to_float(a), fixed_to_float(b), fixed_to_float(fixed_max(a, b)));
   printf("\t\tREALF: max(%f, %f) = %f\n", float_a, float_b, (float_a > float_b) ? float_a : float_b);
+  
+  printf("\nVECTORS :\n");
+
+  float float_ax;
+  float float_ay;
+  float float_az;
+  float float_aw;
+
+  float float_bx;
+  float float_by;
+  float float_bz;
+  float float_bw;
+  
+  printf("\tEnter value of Ax: ");
+  scanf("%f", &float_ax);
+  printf("\tEnter value of Ay: ");
+  scanf("%f", &float_ay);
+  printf("\tEnter value of Az: ");
+  scanf("%f", &float_az);
+  printf("\tEnter value of Aw: ");
+  scanf("%f", &float_aw);
+
+
+  printf("\tEnter value of Bx: ");
+  scanf("%f", &float_bx);
+  printf("\tEnter value of By: ");
+  scanf("%f", &float_by);
+  printf("\tEnter value of Bz: ");
+  scanf("%f", &float_bz);
+  printf("\tEnter value of Bw: ");
+  scanf("%f", &float_bw);
+
+  vec4f_t A = {float_to_fixed(float_ax), float_to_fixed(float_ay), float_to_fixed(float_az), float_to_fixed(float_aw)};
+  vec4f_t B = {float_to_fixed(float_bx), float_to_fixed(float_by), float_to_fixed(float_bz), float_to_fixed(float_bw)};
+  
+  print_vec4f("A", A);
+  print_vec4f("B", B);
 
   return 0;
 }

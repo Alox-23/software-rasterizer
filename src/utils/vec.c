@@ -1,5 +1,9 @@
 #include "vec.h"
 
+void print_vec4f(char* name, vec4f_t a){
+  printf("%s = (%3.f, %3.f, %3.f, %3.f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
+}
+
 // basic arithmetic
 vec4f_t add_vec4f(vec4f_t a, vec4f_t b){
   vec4f_t result;
@@ -60,12 +64,11 @@ fixed_t mag_sq_vec4f(vec4f_t a){
    return fixed_ex2(a.x) + fixed_ex2(a.y) + fixed_ex2(a.z); // ignoire w component
 }
 
-//FIX THIS BULLSHIT
 vec4f_t nrm_vec4f(vec4f_t a){
   fixed_t len_sq = fixed_add(fixed_ex2(a.x), fixed_add(fixed_ex2(a.y), fixed_ex2(a.z)));
 
   if (len_sq > 0){
-    fixed_t inv_len = fixed_div(ONE_F, len_sq);
+    fixed_t inv_len = fixed_div(ONE_F, fixed_sqrt(len_sq));
     return (vec4f_t){
       fixed_mul(a.x, inv_len),
       fixed_mul(a.y, inv_len),
