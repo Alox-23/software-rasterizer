@@ -85,6 +85,10 @@ fixed_t dst_sq_vec4f(vec4f_t a, vec4f_t b){
   return fixed_ex2(dx) + fixed_ex2(dy) + fixed_ex2(dz);
 }
 
+fixed_t det2d_vec4f(vec4f_t a, vec4f_t b){
+  return fixed_sub(fixed_mul(a.x, b.y), fixed_mul(a.y, b.x));
+} 
+
 //utility functions
 vec4f_t min_vec4f(vec4f_t a, vec4f_t b){
   vec4f_t result;

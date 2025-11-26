@@ -1,3 +1,6 @@
+//to compile run this from the root folder of this project:
+//gcc -o src/tests/testvec.c src/utils/float.c src/utils/mat.c src/utils/trig.c src/utils/vec.c
+
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <math.h>

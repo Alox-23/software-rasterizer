@@ -30,6 +30,7 @@ fixed_t dot_vec4f(vec4f_t a, vec4f_t b); // return dot product of a, b
 fixed_t mag_sq_vec4f(vec4f_t a); // ONLY FOR VECTORS, magnitude of a vector squared
 vec4f_t nrm_vec4f(vec4f_t a); // ONLY FOR VECTORS
 fixed_t dst_sq_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS squared
+fixed_t det2d_vec4f(vec4f_t a, vec4f_t b); // the determinant of the vector along the XY plane (for drawring point-in-triangle test)
 
 //utility functions
 vec4f_t min_vec4f(vec4f_t a, vec4f_t b); // min of a, b
