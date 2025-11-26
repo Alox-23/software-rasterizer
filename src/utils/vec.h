@@ -16,6 +16,11 @@ typedef union{
   fixed_t v[4];
 } vec4f_t;
 
+//only for colors
+typedef struct{
+  uint8_t r, g, b, a;
+}color_t;
+
 void print_vec4f(char* name, vec4f_t a);
 
 //basic arithmetic

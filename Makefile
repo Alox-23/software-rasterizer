@@ -8,10 +8,12 @@ TARGET = software_engine
 SOURCES = src/main.c \
 					src/core/engine.c \
 					src/core/memory.c \
-					src/rendering/rasterizer.c \
 					src/utils/vec.c \
 					src/utils/float.c \
 					src/utils/trig.c \
+					src/rendering/mesh.c \
+					src/rendering/renderbuffer.c \
+					src/rendering/rendercommand.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
