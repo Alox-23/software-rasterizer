@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra
+CFLAGS = -std=c11 -Wall -Wextra -O3
 LDFLAGS = -lm
 SDL_FLAGS = `pkg-config --cflags --libs sdl2`
 
@@ -34,7 +34,7 @@ run: $(TARGET)
 debug: CFLAGS += -g -O0 -DDEBUG
 debug: $(TARGET)
 
-release: CFLAGS += -O2 -DNDEBUG
+release: CFLAGS += -DNDEBUG
 release: $(TARGET)
 
 asan: CFLAGS += -g -O1 -fsanitize=address

@@ -10,10 +10,6 @@ typedef struct{
   uint32_t height;
 }render_buffer_t;
 
-void clear_render_buffer(render_buffer_t rb, color_t color){
-  for (int i = 0; i < rb.width * rb.height; i++){
-    rb.pixels[i] = color; // fill every pixel in black
-  }
-}
+void clear_render_buffer(render_buffer_t rb, color_t color);
 
 #endif

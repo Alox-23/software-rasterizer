@@ -4,6 +4,19 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
 }
 
+/*
+color_t to_color(vec4f_t v){
+  color_t result;
+
+  result.r = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.x, COLOR_MAX_F)));
+  result.g = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.y, COLOR_MAX_F)));
+  result.b = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.z, COLOR_MAX_F)));
+  result.a = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.w, COLOR_MAX_F)));
+  
+  return result;
+}
+*/
+
 // basic arithmetic
 vec4f_t add_vec4f(vec4f_t a, vec4f_t b){
   vec4f_t result;

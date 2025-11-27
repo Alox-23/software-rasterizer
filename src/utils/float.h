@@ -10,6 +10,7 @@
 //constants used alot in functions, mainly vector stuf
 #define MINUS_ONE_F (-1 * FIXED_SCALE)
 #define ONE_F (1 * FIXED_SCALE)
+#define COLOR_MAX_F (255 * FIXED_SCALE)
 
 typedef int64_t fixed_t;
 
