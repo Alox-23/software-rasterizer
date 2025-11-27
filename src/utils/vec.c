@@ -4,18 +4,61 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
 }
 
-/*
-color_t to_color(vec4f_t v){
-  color_t result;
+//color
+color_t vec4f_to_color(vec4f_t v){
+  float r_int = fixed_to_float(v.x);
+  float g_int = fixed_to_float(v.y);
+  float b_int = fixed_to_float(v.z);
+  float a_int = fixed_to_float(v.w);
 
-  result.r = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.x, COLOR_MAX_F)));
-  result.g = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.y, COLOR_MAX_F)));
-  result.b = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.z, COLOR_MAX_F)));
-  result.a = fixed_max(0, fixed_min(COLOR_MAX_F, fixed_mul(v.w, COLOR_MAX_F)));
+  uint8_t r = (uint8_t)imax(0, imin(255, r_int));
+  uint8_t g = (uint8_t)imax(0, imin(255, g_int));
+  uint8_t b = (uint8_t)imax(0, imin(255, b_int));
+  uint8_t a = (uint8_t)imax(0, imin(255, a_int));
+
+  printf("RGBA = %d\n", imin(255, ));
   
-  return result;
+  return make_color(r, g, b, a);
 }
-*/
+
+color_t make_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
+  return (color_t)r |
+         ((color_t)g << 8) |
+         ((color_t)g << 16) |
+         ((color_t)g << 24);
+}
+
+uint8_t get_r(color_t c){
+  return (uint8_t)(c & 0xFF);
+}
+
+uint8_t get_g(color_t c){
+  return (uint8_t)((c >> 8) & 0xFF);
+}
+
+uint8_t get_b(color_t c){
+  return (uint8_t)((c >> 16) & 0xFF);
+}
+
+uint8_t get_a(color_t c){
+  return (uint8_t)((c >> 24) & 0xFF);
+}
+
+void set_r(color_t *c, uint8_t new_val){
+  *c = (*c & ~0xFF) | new_val;
+}
+
+void set_g(color_t *c, uint8_t new_val){
+  *c = (*c & ~(0xFF << 8)) | ((color_t)new_val << 8);
+}
+
+void set_b(color_t *c, uint8_t new_val){
+  *c = (*c & ~(0xFF << 16)) | ((color_t)new_val << 16);
+}
+
+void set_a(color_t *c, uint8_t new_val){
+  *c = (*c & ~(0xFF << 24)) | ((color_t)new_val << 24);
+}
 
 // basic arithmetic
 vec4f_t add_vec4f(vec4f_t a, vec4f_t b){

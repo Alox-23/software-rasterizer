@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 
 //Q24.8 if the intager is 32 bits
 #define FIXED_SHIFT 8
@@ -11,6 +12,9 @@
 #define MINUS_ONE_F (-1 * FIXED_SCALE)
 #define ONE_F (1 * FIXED_SCALE)
 #define COLOR_MAX_F (255 * FIXED_SCALE)
+//useful macros
+#define imin(a, b) ((a)<(b)?(a):(b))
+#define imax(a, b) ((a)>(b)?(a):(b))
 
 typedef int64_t fixed_t;
 
