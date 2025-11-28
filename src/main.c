@@ -64,16 +64,15 @@ int main(){
       SDL_SetSurfaceBlendMode(draw_surface, SDL_BLENDMODE_NONE);
     }
 
-    render_buffer_t rb = {
+    pixel_buffer_t rb = {
       .pixels = (color_t*)draw_surface->pixels,
       .width = (uint32_t)width,
       .height = (uint32_t)height,
     };
 
-
     vec4f_t color_vec = {ONE_F, 0, 0, ONE_F};
     color_t color = vec4f_to_color(color_vec);
-    clear_render_buffer(rb, (color_t)color);
+    clear_pixel_buffer(rb, (color_t)color);
 
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);

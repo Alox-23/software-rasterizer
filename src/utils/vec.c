@@ -6,19 +6,13 @@ void print_vec4f(char* name, vec4f_t a){
 
 //color
 color_t vec4f_to_color(vec4f_t v){
-  float r_int = fixed_to_float(v.x);
-  float g_int = fixed_to_float(v.y);
-  float b_int = fixed_to_float(v.z);
-  float a_int = fixed_to_float(v.w);
+  uint8_t components[4] = {};
 
-  uint8_t r = (uint8_t)imax(0, imin(255, r_int));
-  uint8_t g = (uint8_t)imax(0, imin(255, g_int));
-  uint8_t b = (uint8_t)imax(0, imin(255, b_int));
-  uint8_t a = (uint8_t)imax(0, imin(255, a_int));
+  for (int i = 0; i < 4; i++){
+    components[i] = (uint8_t)fixed_to_float(fixed_mul(fixed_min(fixed_max(v.v[i], 0), COLOR_MAX_F), COLOR_MAX_F));
+  }
 
-  printf("RGBA = %d\n", imin(255, ));
-  
-  return make_color(r, g, b, a);
+  return make_color(components[0], components[1], components[2], components[3]);
 }
 
 color_t make_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
