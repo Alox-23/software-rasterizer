@@ -1,10 +1,10 @@
 #include "pixelbuffer.h"
 
-void clear_pixel_buffer(pixel_buffer_t rb, color_t color){
-  int size = rb.width * rb.height;  
+void clear_pixel_buffer(pixel_buffer_t pb, color_t color){
+  int size = pb.width * pb.height;  
 
-  for (int i = 0; i < rb.width * rb.height; i++){
-    rb.pixels[i] = color; // fill every pixel in black
+  for (int i = 0; i < pb.width * pb.height; i++){
+    pb.pixels[i] = color; // fill every pixel in black
   }
 }
 

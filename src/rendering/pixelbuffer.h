@@ -10,6 +10,6 @@ typedef struct{
   uint32_t height;
 }pixel_buffer_t;
 
-void clear_pixel_buffer(pixel_buffer_t rb, color_t color);
+void clear_pixel_buffer(pixel_buffer_t pb, color_t color);
 
 #endif

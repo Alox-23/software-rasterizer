@@ -5,6 +5,5 @@
 #include "float.h"
 #include "vec.h"
 #include "mat.h"
-#include "trig.h"
 
 #endif

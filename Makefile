@@ -9,8 +9,6 @@ SOURCES = src/main.c \
 					src/core/engine.c \
 					src/core/memory.c \
 					src/utils/vec.c \
-					src/utils/float.c \
-					src/utils/trig.c \
 					src/rendering/mesh.c \
 					src/rendering/pixelbuffer.c \
 					src/rendering/rendercommand.c \
