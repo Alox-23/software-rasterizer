@@ -4,11 +4,6 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, a.x, a.y, a.z, a.w);
 }
 
-vec4f_t make_vec4f(float x, float y, float z, float w){
-  return (vec4f_t){x, y, z, w};
-}
-
-
 //color
 color_t vec4f_to_color(vec4f_t v){
   uint8_t components[4] = {};

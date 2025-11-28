@@ -21,7 +21,6 @@ typedef union{
 typedef uint32_t color_t;
 
 void print_vec4f(char* name, vec4f_t a);
-vec4f_t make_vec4f(float x, float y, float z, float w);
 
 //color
 color_t vec4f_to_color(vec4f_t v);

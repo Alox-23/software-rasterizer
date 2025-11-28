@@ -12,6 +12,7 @@ SOURCES = src/main.c \
 					src/rendering/mesh.c \
 					src/rendering/pixelbuffer.c \
 					src/rendering/rendercommand.c \
+					src/rendering/rendering.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

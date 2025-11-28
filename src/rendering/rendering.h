@@ -5,6 +5,6 @@
 #include "pixelbuffer.h"
 #include "rendercommand.h"
 
-void render_call(pixel_buffer_t *pixel_buff, render_command_t command);
+void render_draw_call(pixel_buffer_t *pixel_buff, render_command_t command);
 
 #endif

@@ -8,7 +8,7 @@
 typedef struct{
   vec4f_t* positions;
   uint32_t vertex_count;
-  color_t color;
+  vec4f_t color;
 }mesh_t;
 
 mesh_t make_mesh();

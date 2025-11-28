@@ -70,9 +70,25 @@ int main(){
       .height = (uint32_t)height,
     };
 
-    vec4f_t color_vec = make_vec4f(0.718f, 0.435f, 0.788f, 1.f);
+    vec4f_t color_vec = {0.718f, 0.435f, 0.788f, 1.f};
     color_t color = vec4f_to_color(color_vec);
     clear_pixel_buffer(rb, color);
+
+    vec4f_t verticies[] = {
+      {100.f, 100.f, 0.f, 1.f},
+      {200.f, 100.f, 0.f, 1.f},
+      {100.f, 200.f, 0.f, 1.f},
+    };
+    
+    render_command_t cmd = {
+      .mesh = {
+        .positions = verticies,
+        .vertex_count = 3,
+        .color = (1.f, 0.f, 0.f, 1.f),
+      }
+    };
+
+    render_draw_call(&rb, cmd);
 
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
