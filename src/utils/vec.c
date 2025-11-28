@@ -4,6 +4,11 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, fixed_to_float(a.x), fixed_to_float(a.y), fixed_to_float(a.z), fixed_to_float(a.w));
 }
 
+vec4f_t make_vec4f(float x, float y, float z, float w){
+  return (vec4f_t){float_to_fixed(x), float_to_fixed(y), float_to_fixed(z), float_to_fixed(w)};
+}
+
+
 //color
 color_t vec4f_to_color(vec4f_t v){
   uint8_t components[4] = {};
@@ -18,8 +23,8 @@ color_t vec4f_to_color(vec4f_t v){
 color_t make_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
   return (color_t)r |
          ((color_t)g << 8) |
-         ((color_t)g << 16) |
-         ((color_t)g << 24);
+         ((color_t)b << 16) |
+         ((color_t)a << 24);
 }
 
 uint8_t get_r(color_t c){

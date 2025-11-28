@@ -70,9 +70,9 @@ int main(){
       .height = (uint32_t)height,
     };
 
-    vec4f_t color_vec = {ONE_F, 0, 0, ONE_F};
+    vec4f_t color_vec = make_vec4f(0.718f, 0.435f, 0.788f, 1.f);
     color_t color = vec4f_to_color(color_vec);
-    clear_pixel_buffer(rb, (color_t)color);
+    clear_pixel_buffer(rb, color);
 
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
