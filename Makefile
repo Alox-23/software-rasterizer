@@ -3,7 +3,7 @@ CFLAGS = -std=c11 -Wall -Wextra -O3
 LDFLAGS = -lm
 SDL_FLAGS = `pkg-config --cflags --libs sdl2`
 
-TARGET = software_engine
+TARGET = bin/main
 
 SOURCES = src/main.c \
 					src/core/engine.c \
