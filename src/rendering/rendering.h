@@ -1,6 +1,8 @@
 #ifndef RENDERING_H
 #define RENDERING_H
 
+#include <stdbool.h>
+
 #include "mesh.h"
 #include "pixelbuffer.h"
 #include "rendercommand.h"

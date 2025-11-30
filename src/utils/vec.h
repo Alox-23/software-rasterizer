@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <math.h>
 
 //x and v[0] share the same memory location 
@@ -47,6 +48,7 @@ float mag_sq_vec4f(vec4f_t a); // ONLY FOR VECTORS, magnitude of a vector square
 vec4f_t nrm_vec4f(vec4f_t a); // ONLY FOR VECTORS
 float dst_sq_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS squared
 float det2d_vec4f(vec4f_t a, vec4f_t b); // the determinant of the vector along the XY plane (for drawring point-in-triangle test)
+bool left_or_top_edge(vec4f_t start, vec4f_t end); // helps to remove overdraw in cases where triangle edges overlap
 
 //utility functions
 vec4f_t min_vec4f(vec4f_t a, vec4f_t b); // min of a, b

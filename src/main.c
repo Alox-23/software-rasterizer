@@ -80,15 +80,33 @@ int main(){
       {100.f, 200.f, 0.f, 1.f},
     };
     
-    render_command_t cmd = {
-      .mesh = {
-        .positions = verticies,
-        .vertex_count = 3,
-        .color = (1.f, 0.f, 0.f, 1.f),
-      }
-    };
 
-    render_draw_call(&rb, cmd);
+    for (int i = 0; i < 3; ++i){
+      vec4f_t c = {};
+
+      if ((i % 3) == 0) c.x = 1.f;
+      if ((i % 3) == 1) c.y = 1.f;
+      if ((i % 3) == 2) c.z = 1.f;
+      c.w = 0.f;
+
+      render_command_t cmd = {
+        .mesh = {
+          .positions = verticies,
+          .vertex_count = 3,
+          .color = c,
+        },
+        .cull_mode = NONE,
+        .transform = {
+          {
+            {1.f, 0.f, 0.f, i},
+            {0.f, 1.f, 0.f, i},
+            {0.f, 0.f, 1.f, 0.f},
+            {0.f, 0.f, 0.f, 1.f}
+          },
+        },
+      };
+      render_draw_call(&rb, cmd);
+    }
 
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);

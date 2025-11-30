@@ -139,6 +139,13 @@ float det2d_vec4f(vec4f_t a, vec4f_t b){
   return a.x * b.y - a.y * b.x;
 } 
 
+bool left_or_top_edge(vec4f_t start, vec4f_t end){
+  vec4f_t edge = sub_vec4f(end, start);
+
+  const bool is_left_edge = edge.y > 0;
+  const bool is_top_edge = edge.y == 0 && edge.x < 0;
+  return is_left_edge || is_top_edge;
+}
 //utility functions
 vec4f_t min_vec4f(vec4f_t a, vec4f_t b){
   vec4f_t result;
