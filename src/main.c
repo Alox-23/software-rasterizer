@@ -21,6 +21,9 @@ int main(){
   int frame_count = 0;
   float current_fps = 0.f;
 
+  int mouse_x = 0;
+  int mouse_y = 0;
+
   bool running = true;
   while(running){
     SDL_Event event;
@@ -43,6 +46,10 @@ int main(){
               height = event.window.data2;
               break;
           }
+        case SDL_MOUSEMOTION:          
+          mouse_y = event.motion.y;
+          mouse_x = event.motion.x;
+          break;
       }
     }
 
@@ -75,13 +82,12 @@ int main(){
     clear_pixel_buffer(rb, color);
 
     vec4f_t verticies[] = {
-      {100.f, 100.f, 0.f, 1.f},
-      {200.f, 100.f, 0.f, 1.f},
-      {100.f, 200.f, 0.f, 1.f},
+      {0.f, 0.f, 0.f, 1.f},
+      {0.f, 50.f, 0.f, 1.f},
+      {50.f, 0.f, 0.f, 1.f},
     };
     
-
-    for (int i = 0; i < 3; ++i){
+    for (int i = 0; i < 100; ++i){
       vec4f_t c = {};
 
       if ((i % 3) == 0) c.x = 1.f;
@@ -98,8 +104,8 @@ int main(){
         .cull_mode = NONE,
         .transform = {
           {
-            {1.f, 0.f, 0.f, i},
-            {0.f, 1.f, 0.f, i},
+            {1.f, 0.f, 0.f, mouse_x + 50.f * (i % 10) - 250.f},
+            {0.f, 1.f, 0.f, mouse_y + 50.f * (i / 10) - 250.f},
             {0.f, 0.f, 1.f, 0.f},
             {0.f, 0.f, 0.f, 1.f}
           },

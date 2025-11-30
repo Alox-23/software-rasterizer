@@ -45,10 +45,10 @@ void render_draw_call(pixel_buffer_t *pixl_buff, render_command_t command){
     vec4f_t edge_v1_v2 = sub_vec4f(v2, v1);
     vec4f_t edge_v2_v0 = sub_vec4f(v0, v2);
 
-    int32_t xmin = fmin(v0.x, fmin(v1.x, v2.x));
-    int32_t xmax = fmax(v0.x, fmax(v1.x, v2.x));
-    int32_t ymin = fmin(v0.y, fmin(v1.y, v2.y));
-    int32_t ymax = fmax(v0.y, fmax(v1.y, v2.y));
+    int32_t xmin = fmax(0, fmin(v0.x, fmin(v1.x, v2.x)));
+    int32_t xmax = fmin(pixl_buff->width, fmax(v0.x, fmax(v1.x, v2.x)));
+    int32_t ymin = fmax(0, fmin(v0.y, fmin(v1.y, v2.y)));
+    int32_t ymax = fmin(pixl_buff->height, fmax(v0.y, fmax(v1.y, v2.y)));
 
     for (int32_t y = ymin; y < ymax; ++y){
       uint32_t row_offset = y * pixl_buff->width;
