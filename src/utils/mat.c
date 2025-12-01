@@ -23,12 +23,12 @@ mat4f_t make_identity_mat4f(){
   return result;
 }
 
-mat4f_t make_translation_mat4f(float tx, float ty, float tz){
+mat4f_t make_translation_mat4f(vec4f_t v){
   mat4f_t result = {
     {
-      {1.f, 0.f, 0.f, tx},
-      {0.f, 1.f, 0.f, ty},
-      {0.f, 0.f, 1.f, tz},
+      {1.f, 0.f, 0.f, v.x},
+      {0.f, 1.f, 0.f, v.y},
+      {0.f, 0.f, 1.f, v.z},
       {0.f, 0.f, 0.f, 1.f},
     },
   };
