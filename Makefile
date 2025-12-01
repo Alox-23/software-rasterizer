@@ -11,7 +11,10 @@ SOURCES = src/main.c \
 					src/utils/vec.c \
 					src/utils/mat.c \
 					src/rendering/mesh.c \
-					src/rendering/pixelbuffer.c \
+					src/rendering/cube.c \
+					src/rendering/rendertarget.c \
+					src/rendering/colorbuffer.c \
+					src/rendering/viewport.c \
 					src/rendering/rendercommand.c \
 					src/rendering/rendering.c \
 

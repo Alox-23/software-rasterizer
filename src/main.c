@@ -73,60 +73,39 @@ int main(){
       SDL_SetSurfaceBlendMode(draw_surface, SDL_BLENDMODE_NONE);
     }
 
-    pixel_buffer_t rb = {
+    color_buffer_t cb = {
       .pixels = (color_t*)draw_surface->pixels,
       .width = (uint32_t)width,
       .height = (uint32_t)height,
     };
 
-    vec4f_t color_vec = {0.718f, 0.435f, 0.788f, 1.f};
-    color_t color = vec4f_to_color(color_vec);
-    clear_pixel_buffer(rb, color);
-
-    int trig_size = 50.f;
-    int num_trig = 100;
-    int row_size = (int)sqrt(num_trig);
-
-    vec4f_t verticies[] = {
-      {0.f, 0.f, 0.f, 1.f},
-      {0.f, trig_size, 0.f, 1.f},
-      {trig_size, 0.f, 0.f, 1.f},
+    render_target_t rt = {
+      .color_buffer = cb,
+      .viewport = {
+        .xmin = 0,
+        .ymin = 0,
+        .xmax = (int32_t)cb.width,
+        .ymax = (int32_t)cb.height,
+      },
     };
 
-    vec4f_t colors[] = {
-      {1.f, 0.f, 0.f, 1.f},
-      {0.f, 1.f, 0.f, 1.f},
-      {0.f, 0.f, 1.f, 1.f},
-    };
-
-    angle += 0.02;
+    clear_color_buffer(cb, (vec4f_t){0.718f, 0.435f, 0.788f, 1.f});
     
-    for (int i = 0; i < num_trig; ++i){
-      vec4f_t c = {};
+    angle += 0.02;
 
-      if ((i % 3) == 0) c.x = 1.f;
-      if ((i % 3) == 1) c.y = 1.f;
-      if ((i % 3) == 2) c.z = 1.f;
-      c.w = 0.f;
-     
-      mat4f_t translation_matrix = make_translation_mat4f(trig_size * (i % row_size) - (row_size * trig_size / 2), trig_size * (i / row_size) - (row_size * trig_size / 2), 0.f);
-
-      mat4f_t rotation_matrix = make_rotation_mat4f(angle);
-
-      mat4f_t final_matrix = mul_mat4f(make_translation_mat4f(mouse_x, mouse_y, 0), mul_mat4f(rotation_matrix, translation_matrix));
-      
-      render_command_t cmd = {
-        .mesh = {
-          .positions = verticies,
-          .colors = colors,
-          .vertex_count = 3,
-        },
+    mat4f_t scale = make_scale_mat4f((vec4f_t){0.25f, 0.25f, 0.25f, 0.25f});
+    mat4f_t rotation = mul_mat4f(make_rotationZX_mat4f(angle), mul_mat4f(make_rotationXY_mat4f(angle), make_rotationYZ_mat4f(angle)));
+    mat4f_t final = mul_mat4f(scale, rotation);
+    
+    render_draw_call(
+      rt,
+      (render_command_t){
+        .mesh = make_cube_mesh(),
         .cull_mode = NONE,
-        .transform = final_matrix,
-      };
-      render_draw_call(&rb, cmd);
-    }
-
+        .transform = final,
+      }
+    );
+   
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
 

@@ -4,9 +4,12 @@
 #include <stdbool.h>
 
 #include "mesh.h"
-#include "pixelbuffer.h"
+#include "cube.h"
+#include "viewport.h"
+#include "rendertarget.h"
+#include "colorbuffer.h"
 #include "rendercommand.h"
 
-void render_draw_call(pixel_buffer_t *pixel_buff, render_command_t command);
+void render_draw_call(render_target_t render_target, render_command_t command);
 
 #endif

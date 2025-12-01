@@ -8,8 +8,8 @@ typedef struct{
   color_t* pixels;
   uint32_t width;
   uint32_t height;
-}pixel_buffer_t;
+}color_buffer_t;
 
-void clear_pixel_buffer(pixel_buffer_t pb, color_t color);
+void clear_color_buffer(color_buffer_t cb, vec4f_t color);
 
 #endif

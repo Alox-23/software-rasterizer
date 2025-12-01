@@ -36,13 +36,64 @@ mat4f_t make_translation_mat4f(float tx, float ty, float tz){
   return result;
 }
 
-mat4f_t make_rotation_mat4f(float angle){
+mat4f_t make_scale_mat4f(vec4f_t s){
   mat4f_t result = {
     {
-      {cos(angle), -sin(angle), 0.f, 0.f},
-      {sin(angle),  cos(angle), 0.f, 0.f},
+      {s.x, 0.f, 0.f, 0.f},
+      {0.f, s.y, 0.f, 0.f},
+      {0.f, 0.f, s.z, 0.f},
+      {0.f, 0.f, 0.f, 1.f},
+    },
+  };
+
+  return result;
+}
+
+mat4f_t make_rotationXY_mat4f(float angle){
+  
+  float cosa = cos(angle);
+  float sina = sin(angle);
+
+  mat4f_t result = {
+    {
+      {cosa, -sina, 0.f, 0.f},
+      {sina,  cosa, 0.f, 0.f},
       {0.f, 0.f, 1.f, 0.f},
       {0.f, 0.f, 0.f, 1.f},
+    },
+  };
+
+  return result;
+}
+
+mat4f_t make_rotationYZ_mat4f(float angle){
+  
+  float cosa = cos(angle);
+  float sina = sin(angle);
+
+  mat4f_t result = {
+    {
+      {1.f, 0.f,  0.f, 0.f},
+      {0.f, cosa, -sina, 0.f},
+      {0.f, sina,  cosa, 0.f},
+      {0.f, 0.f,  0.f, 1.f},
+    },
+  };
+
+  return result;
+}
+
+mat4f_t make_rotationZX_mat4f(float angle){
+  
+  float cosa = cos(angle);
+  float sina = sin(angle);
+
+  mat4f_t result = {
+    {
+      { cosa, 0.f, sina, 0.f},
+      { 0.f, 1.f, 0.f, 0.f},
+      {-sina, 0.f, cosa, 0.f},
+      { 0.f, 0.f, 0.f, 1.f},
     },
   };
 

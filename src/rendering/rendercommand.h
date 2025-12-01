@@ -12,7 +12,7 @@ typedef enum{
 typedef struct{
   mesh_t mesh;
   cull_mode_e cull_mode;
-  mat4f_t transform; 
+  mat4f_t transform;
 }render_command_t;
 
 #endif
