@@ -23,6 +23,8 @@ int main(){
 
   int mouse_x = 0;
   int mouse_y = 0;
+  
+  float angle = 1;
 
   bool running = true;
   while(running){
@@ -59,7 +61,7 @@ int main(){
 
     if (elapsed_ticks >= perf_freq){
       current_fps = (float)frame_count / ((float)elapsed_ticks / perf_freq);
-
+ 
       printf("FPS: %.2f\n", current_fps);
 
       last_time = current_time;
@@ -81,19 +83,31 @@ int main(){
     color_t color = vec4f_to_color(color_vec);
     clear_pixel_buffer(rb, color);
 
+    int trig_size = 50.f;
+    int num_trig = 100;
+    int row_size = (int)sqrt(num_trig);
+
     vec4f_t verticies[] = {
       {0.f, 0.f, 0.f, 1.f},
-      {0.f, 50.f, 0.f, 1.f},
-      {50.f, 0.f, 0.f, 1.f},
+      {0.f, trig_size, 0.f, 1.f},
+      {trig_size, 0.f, 0.f, 1.f},
     };
+ 
+    angle += 0.02;
     
-    for (int i = 0; i < 100; ++i){
+    for (int i = 0; i < num_trig; ++i){
       vec4f_t c = {};
 
       if ((i % 3) == 0) c.x = 1.f;
       if ((i % 3) == 1) c.y = 1.f;
       if ((i % 3) == 2) c.z = 1.f;
       c.w = 0.f;
+     
+      mat4f_t translation_matrix = make_translation_mat4f(trig_size * (i % row_size) - (row_size * trig_size / 2), trig_size * (i / row_size) - (row_size * trig_size / 2), 0.f);
+
+      mat4f_t rotation_matrix = make_rotation_mat4f(angle);
+
+      mat4f_t final_matrix = mul_mat4f(make_translation_mat4f(mouse_x, mouse_y, 0), mul_mat4f(rotation_matrix, translation_matrix));
 
       render_command_t cmd = {
         .mesh = {
@@ -102,14 +116,7 @@ int main(){
           .color = c,
         },
         .cull_mode = NONE,
-        .transform = {
-          {
-            {1.f, 0.f, 0.f, mouse_x + 50.f * (i % 10) - 250.f},
-            {0.f, 1.f, 0.f, mouse_y + 50.f * (i / 10) - 250.f},
-            {0.f, 0.f, 1.f, 0.f},
-            {0.f, 0.f, 0.f, 1.f}
-          },
-        },
+        .transform = final_matrix,
       };
       render_draw_call(&rb, cmd);
     }
