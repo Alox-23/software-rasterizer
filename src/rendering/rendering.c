@@ -2,27 +2,23 @@
 
 void render_draw_call(pixel_buffer_t *pixl_buff, render_command_t command){
   for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh.vertex_count; vertex_index += 3){
-    /*
-    vec4f_t v0 = command.mesh.positions[vertex_index + 0]; 
-    vec4f_t v1 = command.mesh.positions[vertex_index + 1]; 
-    vec4f_t v2 = command.mesh.positions[vertex_index + 2]; 
-    */
     vec4f_t v0 = mul_matvec4f(command.transform, command.mesh.positions[vertex_index + 0]); 
     vec4f_t v1 = mul_matvec4f(command.transform, command.mesh.positions[vertex_index + 1]); 
     vec4f_t v2 = mul_matvec4f(command.transform, command.mesh.positions[vertex_index + 2]); 
 
-    /*
-    print_vec4f("v0", v0);
-    print_vec4f("v1", v1);
-    print_vec4f("v2", v2);
-    */
+    vec4f_t c0 = command.mesh.colors[vertex_index + 0];
+    vec4f_t c1 = command.mesh.colors[vertex_index + 1];
+    vec4f_t c2 = command.mesh.colors[vertex_index + 2];
 
     //handling triangle orientation
     //if determinant v0, v1, v2 is < 0 we need to swap v1 and v2
-
     float det_v0_v1_v2 = det2d_vec4f(sub_vec4f(v1, v0), sub_vec4f(v2, v0));
     const bool is_ccw = det_v0_v1_v2 < 0.f;
-
+    if (is_ccw){
+      vec4f_t temp = v1;
+      v1 = v2;
+      v2 = temp;
+    }
     //handle culling
     switch (command.cull_mode){
       case NONE:
@@ -33,12 +29,6 @@ void render_draw_call(pixel_buffer_t *pixl_buff, render_command_t command){
       case CCW:
         if (is_ccw) continue; //skip rendering
         break;
-    }
-
-    if (is_ccw){
-      vec4f_t temp = v1;
-      v1 = v2;
-      v2 = temp;
     }
 
     vec4f_t edge_v0_v1 = sub_vec4f(v1, v0);
@@ -66,7 +56,16 @@ void render_draw_call(pixel_buffer_t *pixl_buff, render_command_t command){
         //if (left_or_top_edge(v2, v0)) det_v2_v0_p--; 
       
         if (det_v0_v1_p >= 0.f && det_v1_v2_p >= 0.f && det_v2_v0_p >= 0.f){
-          pixl_buff->pixels[x + row_offset] = vec4f_to_color(command.mesh.color);
+          float l0 = det_v1_v2_p / det_v0_v1_v2;
+          float l1 = det_v2_v0_p / det_v0_v1_v2;
+          float l2 = det_v0_v1_p / det_v0_v1_v2;
+
+          vec4f_t pixel_color = add_vec4f(scl_vec4f(c0, l0), add_vec4f(scl_vec4f(c1, l1), scl_vec4f(c2, l2)));
+          pixel_color = abs_vec4f(pixel_color);
+
+          //print_vec4f("color", pixel_color);
+
+          pixl_buff->pixels[x + row_offset] = vec4f_to_color(pixel_color);
         }
       }
     }

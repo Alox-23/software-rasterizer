@@ -92,7 +92,13 @@ int main(){
       {0.f, trig_size, 0.f, 1.f},
       {trig_size, 0.f, 0.f, 1.f},
     };
- 
+
+    vec4f_t colors[] = {
+      {1.f, 0.f, 0.f, 1.f},
+      {0.f, 1.f, 0.f, 1.f},
+      {0.f, 0.f, 1.f, 1.f},
+    };
+
     angle += 0.02;
     
     for (int i = 0; i < num_trig; ++i){
@@ -108,12 +114,12 @@ int main(){
       mat4f_t rotation_matrix = make_rotation_mat4f(angle);
 
       mat4f_t final_matrix = mul_mat4f(make_translation_mat4f(mouse_x, mouse_y, 0), mul_mat4f(rotation_matrix, translation_matrix));
-
+      
       render_command_t cmd = {
         .mesh = {
           .positions = verticies,
+          .colors = colors,
           .vertex_count = 3,
-          .color = c,
         },
         .cull_mode = NONE,
         .transform = final_matrix,

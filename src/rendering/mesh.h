@@ -7,8 +7,8 @@
 //number of triangles in mesh = positions / vertex_count
 typedef struct{
   vec4f_t* positions;
+  vec4f_t* colors; 
   uint32_t vertex_count;
-  vec4f_t color;
 }mesh_t;
 
 mesh_t make_mesh();
