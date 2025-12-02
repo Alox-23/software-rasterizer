@@ -1,5 +1,6 @@
 #include "mat.h"
 
+//utility
 void print_mat4f(char* name, mat4f_t m){
   printf("%s={\n\t{%.3f, %.3f, %.3f, %.3f}\n\t{%.3f, %.3f, %.3f, %.3f}\n\t{%.3f, %.3f, %.3f, %.3f}\n\t{%.3f, %.3f, %.3f, %.3f}\n}",
          name,
@@ -10,6 +11,7 @@ void print_mat4f(char* name, mat4f_t m){
          );
 }
 
+//make matrixes
 mat4f_t make_identity_mat4f(){
   mat4f_t result = {
     {
@@ -100,6 +102,21 @@ mat4f_t make_rotationZX_mat4f(float angle){
   return result;
 }
 
+mat4f_t make_perspective_mat4f(float near, float far, float fovY, float aspect_ratio){
+  float top = near * tan(fovY / 2.f);
+  float right = top * aspect_ratio;
+
+  return (mat4f_t){
+    {
+      {near / right, 0.f, 0.f, 0.f},
+      {0.f, near/ top, 0.f, 0.f},
+      {0.f, 0.f, -(far + near) / (far - near), -2.f * far * near / (far - near)},
+      {0.f, 0.f, -1.f, 0.f},
+    }
+  };
+}
+
+//combining transformations and applying them
 mat4f_t mul_mat4f(mat4f_t a, mat4f_t b){
   mat4f_t result = {};
   

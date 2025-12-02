@@ -16,6 +16,10 @@ void render_draw_call(render_target_t render_target, render_command_t command){
     vec4f_t v1 = mul_matvec4f(command.transform, command.mesh.positions[i1]); 
     vec4f_t v2 = mul_matvec4f(command.transform, command.mesh.positions[i2]); 
 
+    v0 = pdiv_vec4f(v0);
+    v1 = pdiv_vec4f(v1);
+    v2 = pdiv_vec4f(v2);
+
     v0 = apply_viewport(render_target.viewport, v0);
     v1 = apply_viewport(render_target.viewport, v1);
     v2 = apply_viewport(render_target.viewport, v2);

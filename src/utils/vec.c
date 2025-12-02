@@ -128,6 +128,13 @@ vec4f_t nrm_vec4f(vec4f_t a){
   }
 }
 
+vec4f_t pdiv_vec4f(vec4f_t v){
+  v.x /= v.w;
+  v.y /= v.w;
+  v.z /= v.w;
+  return v;
+}
+
 float dst_sq_vec4f(vec4f_t a, vec4f_t b){
   float dx = a.x - b.x;
   float dy = a.y - b.y;

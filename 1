@@ -91,17 +91,19 @@ int main(){
 
     clear_color_buffer(cb, (vec4f_t){0.718f, 0.435f, 0.788f, 1.f});
     
-    angle += 0.02;
+    angle += 0.01;
 
-    mat4f_t scale = mul_mat4f(make_scale_mat4f(), make_scale_mat4f((vec4f_t){0.25f, 0.25f, 0.25f, 0.25f}));
-    mat4f_t rotation = mul_mat4f(make_rotationZX_mat4f(angle), mul_mat4f(make_rotationXY_mat4f(angle), make_rotationYZ_mat4f(angle)));
-    mat4f_t final = mul_mat4f(scale, rotation);
+    mat4f_t perspective = make_perspective_mat4f(0.01f, 10.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t scale = make_scale_mat4f((vec4f_t){0.1f, 0.1f, 0.1f, 1.f});
+    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, 0.f, 0.f});
+    mat4f_t rotation = mul_mat4f(make_rotationZX_mat4f(angle), make_rotationXY_mat4f(angle * 1.6f));
+    mat4f_t final = mul_mat4f(mul_mat4f(perspective, translate), rotation);
     
     render_draw_call(
       rt,
       (render_command_t){
         .mesh = make_cube_mesh(),
-        .cull_mode = NONE,
+        .cull_mode = CW,
         .transform = final,
       }
     );

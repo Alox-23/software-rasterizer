@@ -93,10 +93,11 @@ int main(){
     
     angle += 0.01;
 
-    mat4f_t scale = mul_mat4f(make_scale_mat4f((vec4f_t){height * 1.f / width, 1.f, 1.f, 1.f}), make_scale_mat4f((vec4f_t){0.25f, 0.25f, 0.25f, 0.25f}));
-    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, 0.f, 0.f});
+    mat4f_t perspective = make_perspective_mat4f(0.01f, 10.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t scale = make_scale_mat4f((vec4f_t){0.5f, 0.5f, 0.5f, 1.f});
+    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, -5.f, 0.f});
     mat4f_t rotation = mul_mat4f(make_rotationZX_mat4f(angle), make_rotationXY_mat4f(angle * 1.6f));
-    mat4f_t final = mul_mat4f(translate, mul_mat4f(scale, rotation));
+    mat4f_t final = mul_mat4f(mul_mat4f(perspective, translate), rotation);
     
     render_draw_call(
       rt,
