@@ -19,9 +19,17 @@ typedef union{
   float v[4];
 } vec4f_t;
 
+typedef struct{
+  vec4f_t position;
+  vec4f_t color;
+} vertex;
+
 typedef uint32_t color_t;
 
 void print_vec4f(char* name, vec4f_t a);
+
+vertex* clip_triangle_single_plane(vertex* triangle_begin, const vec4f_t equation, vertex* result_out_end);
+vertex* clip_triangle(vertex* begin, vertex* end);
 
 //color
 color_t vec4f_to_color(vec4f_t v);

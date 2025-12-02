@@ -4,6 +4,43 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, a.x, a.y, a.z, a.w);
 }
 
+vertex* clip_triangle_single_plane(vertex* triangle_begin, const vec4f_t equation, vertex* result_out_end){
+  float values[3] = {
+    dot_vec4f(triangle[0].position, equation),
+    dot_vec4f(triangle[1].position, equation),
+    dot_vec4f(triangle[2].position, equation),
+  };
+
+  //shit is unfinished
+}
+
+vertex* clip_triangle(vertex* begin, vertex* end){
+  static vec4f_t const equations[2] = {
+    {0.f, 0.f,  1.f, 1.f}, // Z > -W or  Z + w > 0
+    {0.f, 0.f, -1.f, 1.f}, // Z <  W or -Z + W > 0
+  };
+
+  vertex result[12];
+
+  for (int i = 0; i < 2; ++i){
+    const vec4f_t* equation = &equations[i];
+    vertex* result_end = result;
+
+    for (vertex* triangle = begin; triangle != end; triangle += 3){
+      result_end = clip_triangle_single_plane(triangle, equation, result_end);
+    }
+
+    size_t num_bytes = (size_t)(result_end - result) * sizeof(vertex);
+    if (num_bytes > 0){
+      memcpy(begin, result, num_bytes);
+    }
+
+    end = begin + (result_end - result);
+  }
+
+  return end;
+}
+
 //color
 color_t vec4f_to_color(vec4f_t v){
   uint8_t components[4] = {};
