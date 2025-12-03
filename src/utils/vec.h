@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -28,7 +29,8 @@ typedef uint32_t color_t;
 
 void print_vec4f(char* name, vec4f_t a);
 
-vertex* clip_triangle_single_plane(vertex* triangle_begin, const vec4f_t equation, vertex* result_out_end);
+vertex clip_intersect_edge(vertex const v0, vertex const v1, float value0, float value1);
+vertex* clip_triangle_single_plane(vertex* triangle, vec4f_t equation, vertex* result);
 vertex* clip_triangle(vertex* begin, vertex* end);
 
 //color

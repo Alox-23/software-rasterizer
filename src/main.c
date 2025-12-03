@@ -20,53 +20,62 @@ int main(){
   Uint64 last_time = SDL_GetPerformanceCounter();
   int frame_count = 0;
   float current_fps = 0.f;
+  float delta_time;
 
   int mouse_x = 0;
   int mouse_y = 0;
+
+  float pdx;
+  float pdz;
+  float speed = 10;
+  float rot = 0;
+  float rspeed = 3;
   
   float angle = 1;
 
   bool running = true;
   while(running){
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+
+    if (state[SDL_SCANCODE_LEFT]) rot -= rspeed * delta_time;
+    if (state[SDL_SCANCODE_RIGHT]) rot += rspeed * delta_time;
+    if (state[SDL_SCANCODE_W]) pdz += speed * delta_time;
+    if (state[SDL_SCANCODE_S]) pdz -= speed * delta_time;
+    if (state[SDL_SCANCODE_A]) pdx += speed * delta_time;
+    if (state[SDL_SCANCODE_D]) pdx -= speed * delta_time;
+
     SDL_Event event;
     while (SDL_PollEvent(&event)){
-      switch (event.type){
-        case SDL_QUIT:
-          running = false;
-          break;
-        case SDL_KEYDOWN:
-          if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE){
-            running = false;
-          }
-          break;
-        case SDL_WINDOWEVENT:
-          switch (event.window.event) {
-            case SDL_WINDOWEVENT_RESIZED:
-              if (draw_surface) SDL_FreeSurface(draw_surface);
-              draw_surface = NULL;
-              width = event.window.data1;
-              height = event.window.data2;
-              break;
-          }
-        case SDL_MOUSEMOTION:          
-          mouse_y = event.motion.y;
-          mouse_x = event.motion.x;
-          break;
+      if (event.type == SDL_QUIT){
+        running = false;
+        break;
+      }
+      if (event.type == SDL_KEYDOWN){
+        if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) running = false;
+      }
+      if (event.type == SDL_WINDOWEVENT){
+        switch (event.window.event) {
+          case SDL_WINDOWEVENT_RESIZED:
+            if (draw_surface) SDL_FreeSurface(draw_surface);
+            draw_surface = NULL;
+            width = event.window.data1;
+            height = event.window.data2;
+            break;
+        }
+      }
+      if (event.type == SDL_MOUSEMOTION){
+        mouse_y = event.motion.y;
+        mouse_x = event.motion.x;
+        break;
       }
     }
 
     frame_count++;
-    Uint64 current_time = SDL_GetPerformanceCounter();
-    Uint64 elapsed_ticks = current_time - last_time;
+    Uint32 current_time = SDL_GetTicks();
+    delta_time = (float)(current_time - last_time) / 1000.f;
+    last_time = current_time;
 
-    if (elapsed_ticks >= perf_freq){
-      current_fps = (float)frame_count / ((float)elapsed_ticks / perf_freq);
- 
-      printf("FPS: %.2f\n", current_fps);
-
-      last_time = current_time;
-      frame_count = 0;
-    }
+    printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
 
     if (!draw_surface){
       draw_surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
@@ -94,10 +103,9 @@ int main(){
     angle += 0.01;
 
     mat4f_t perspective = make_perspective_mat4f(0.01f, 10.f, M_PI / 3.f, width * 1.f / height);
-    mat4f_t scale = make_scale_mat4f((vec4f_t){0.5f, 0.5f, 0.5f, 1.f});
-    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, -5.f, 0.f});
-    mat4f_t rotation = mul_mat4f(make_rotationZX_mat4f(angle), make_rotationXY_mat4f(angle * 1.6f));
-    mat4f_t final = mul_mat4f(mul_mat4f(perspective, translate), rotation);
+    mat4f_t translate = make_translation_mat4f((vec4f_t){pdx, -1.f, pdz + -4.f, 0.f});
+    mat4f_t rotation = make_rotationZX_mat4f(rot);
+    mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
     
     render_draw_call(
       rt,
