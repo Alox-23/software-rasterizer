@@ -27,6 +27,7 @@ int main(){
 
   float pdx;
   float pdz;
+  float pdy;
   float speed = 10;
   float rot = 0;
   float rspeed = 3;
@@ -43,6 +44,8 @@ int main(){
     if (state[SDL_SCANCODE_S]) pdz -= speed * delta_time;
     if (state[SDL_SCANCODE_A]) pdx += speed * delta_time;
     if (state[SDL_SCANCODE_D]) pdx -= speed * delta_time;
+    if (state[SDL_SCANCODE_R]) pdy -= speed * delta_time;
+    if (state[SDL_SCANCODE_F]) pdy += speed * delta_time;
 
     SDL_Event event;
     while (SDL_PollEvent(&event)){
@@ -102,8 +105,8 @@ int main(){
     
     angle += 0.01;
 
-    mat4f_t perspective = make_perspective_mat4f(0.01f, 10.f, M_PI / 3.f, width * 1.f / height);
-    mat4f_t translate = make_translation_mat4f((vec4f_t){pdx, -1.f, pdz + -4.f, 0.f});
+    mat4f_t perspective = make_perspective_mat4f(0.1f, 100.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t translate = make_translation_mat4f((vec4f_t){-pdx, -pdy, -pdz, 0.f});
     mat4f_t rotation = make_rotationZX_mat4f(rot);
     mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
     
