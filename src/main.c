@@ -114,7 +114,7 @@ int main(){
     
     angle += 0.01;
 
-    mat4f_t perspective = make_perspective_mat4f(0.1f, 100.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t perspective = make_perspective_mat4f(4.f, 100.f, M_PI / 3.f, width * 1.f / height);
     mat4f_t translate = make_translation_mat4f((vec4f_t){-pdx, -pdy, -pdz, 0.f});
     mat4f_t rotation = make_rotationZX_mat4f(rot);
     mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));

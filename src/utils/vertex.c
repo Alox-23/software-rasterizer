@@ -4,8 +4,8 @@ vertex clip_intersect_edge(vertex const v0, vertex const v1, float value0, float
   float t = value0 / (value0 - value1);
 
   vertex v;
-  v.position = add_vec4f(scl_vec4f(v0.position, (1.f -1)), scl_vec4f(v1.position, t));
-  v.color = add_vec4f(scl_vec4f(v0.color, (1.f -1)), scl_vec4f(v1.color, t));
+  v.position = add_vec4f(scl_vec4f(v0.position, (1.f - t)), scl_vec4f(v1.position, t));
+  v.color = add_vec4f(scl_vec4f(v0.color, (1.f - t)), scl_vec4f(v1.color, t));
 
   return v;
 }
