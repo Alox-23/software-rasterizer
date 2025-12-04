@@ -16,8 +16,8 @@ int main(){
 
   SDL_Surface *draw_surface = NULL;
 
-  const Uint64 perf_freq = SDL_GetPerformanceFrequency();
-  Uint64 last_time = SDL_GetPerformanceCounter();
+  Uint32 last_time = SDL_GetTicks();
+  Uint32 last_frame_time = SDL_GetTicks();
   int frame_count = 0;
   float current_fps = 0.f;
   float delta_time;
@@ -78,7 +78,16 @@ int main(){
     delta_time = (float)(current_time - last_time) / 1000.f;
     last_time = current_time;
 
-    printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
+    if (current_time - last_frame_time >= 1000){
+      current_fps = (float)frame_count / ((current_time - last_frame_time) / 1000.f);
+      
+      printf("FPS: %2.f\n", current_fps);
+      printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
+
+      frame_count = 0;
+      last_frame_time = current_time;
+    }
+    
 
     if (!draw_surface){
       draw_surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);

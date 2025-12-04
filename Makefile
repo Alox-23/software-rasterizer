@@ -10,6 +10,7 @@ SOURCES = src/main.c \
 					src/core/memory.c \
 					src/utils/vec.c \
 					src/utils/mat.c \
+					src/utils/vertex.c \
 					src/rendering/mesh.c \
 					src/rendering/cube.c \
 					src/rendering/rendertarget.c \
