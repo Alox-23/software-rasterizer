@@ -8,6 +8,7 @@
 #include <math.h>
 #include "float.h"
 #include "vec.h"
+#include "color.h"
 #include "mat.h"
 #include "vertex.h"
 
