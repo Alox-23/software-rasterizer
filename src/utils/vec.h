@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -46,6 +47,7 @@ vec4f_t neg_vec4f(vec4f_t a); // returns -a
 float dot_vec4f(vec4f_t a, vec4f_t b); // return dot product of a, b
 float mag_sq_vec4f(vec4f_t a); // ONLY FOR VECTORS, magnitude of a vector squared
 vec4f_t nrm_vec4f(vec4f_t a); // ONLY FOR VECTORS
+vec4f_t pdiv_vec4f(vec4f_t v);
 float dst_sq_vec4f(vec4f_t a, vec4f_t b); // distance between two POINTS squared
 float det2d_vec4f(vec4f_t a, vec4f_t b); // the determinant of the vector along the XY plane (for drawring point-in-triangle test)
 bool left_or_top_edge(vec4f_t start, vec4f_t end); // helps to remove overdraw in cases where triangle edges overlap

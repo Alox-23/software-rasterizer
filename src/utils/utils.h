@@ -9,5 +9,6 @@
 #include "float.h"
 #include "vec.h"
 #include "mat.h"
+#include "vertex.h"
 
 #endif
