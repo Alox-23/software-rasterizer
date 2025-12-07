@@ -82,7 +82,7 @@ int main(){
       current_fps = (float)frame_count / ((current_time - last_frame_time) / 1000.f);
       
       printf("FPS: %2.f\n", current_fps);
-      //printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
+      printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
 
       frame_count = 0;
       last_frame_time = current_time;
@@ -115,7 +115,7 @@ int main(){
     angle += 2 * delta_time;
 
     mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
-    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, -5.f, 0.f});
+    mat4f_t translate = make_translation_mat4f((vec4f_t){-pdx, -pdy, -pdz, 0.f});
     mat4f_t rotation = make_rotationZX_mat4f(angle);
     mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
     
