@@ -4,6 +4,31 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, a.x, a.y, a.z, a.w);
 }
 
+//basic arithmetic but pointers hehehe
+void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a.v[i] + a.v[i];
+  }
+}
+
+void psub_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a.v[i] + a.v[i];
+  }
+}
+
+void pmul_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a.v[i] + a.v[i];
+  }
+}
+
+void pscl_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, float s){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a.v[i] * s;
+  }
+}
+
 // basic arithmetic
 void add_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
   for (int i = 0; i < 4; i++){

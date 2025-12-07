@@ -22,6 +22,12 @@ typedef union{
 
 void print_vec4f(char* name, vec4f_t a);
 
+//basic arithmetic but pointers hehehe
+void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a + b
+void psub_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a - b 
+void pmul_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a * b
+void pscl_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, float s); // returns a * s
+
 //basic arithmetic
 void add_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a + b
 void sub_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a - b 
