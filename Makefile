@@ -20,6 +20,7 @@ SOURCES = src/main.c \
 					src/rendering/rendercommand.c \
 					src/rendering/rendering.c \
 
+HEADERS = $(SOURCES:.c=.h)
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(TARGET)
@@ -45,6 +46,10 @@ release: $(TARGET)
 asan: CFLAGS += -g -O1 -fsanitize=address
 asan: LDFLAGS += -fsanitize=address
 asan: $(TARGET)
+
+loc:
+	@echo "Counting Total Lines of Code (.c and .h files)..."
+	@wc -l $(SOURCES) $(HEADERS) | grep "total"
 
 deps:
 	sudo apt-get install libsdl2-dev

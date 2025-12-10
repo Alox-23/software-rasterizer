@@ -116,8 +116,11 @@ int main(){
 
     mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
     mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, 0.f, -5.f, 0.f});
+    mat4f_t translate2 = make_translation_mat4f((vec4f_t){0.f, 0.f, -10.f, 0.f});
     mat4f_t rotation = make_rotationZX_mat4f(angle);
+    mat4f_t rotation2 = make_rotationZX_mat4f(-angle);
     mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
+    mat4f_t final2 = mul_mat4f(perspective, mul_mat4f(translate2, rotation2));
     
     render_draw_call(
       rt,
@@ -127,7 +130,7 @@ int main(){
         .transform = final,
       }
     );
-   
+    
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
 
