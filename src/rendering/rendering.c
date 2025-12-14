@@ -112,6 +112,18 @@ void render_draw_call(render_target_t render_target, render_command_t command){
             float l1 = det_v2_v0_p / det_v0_v1_v2 / v1.w;
             float l2 = det_v0_v1_p / det_v0_v1_v2 / v2.w;
 
+            //depth test 
+            if (render_target.depth_buffer.depth_values){
+              float z = l0 * v0.z + l1 * v1.z + l2* v2.z;
+
+              uint32_t depth = (0.5f + 0.5f * z) * UINT32_MAX;
+
+              uint32_t* old_depth_ptr = &render_target.depth_buffer.depth_values[x + y * render_target.depth_buffer.height];
+              uint32_t old_depth = *old_depth_ptr;
+              if (!depth_test(command.depth.mode, depth, old_depth)) continue;
+              if (command.depth.write) *old_depth_ptr = depth;
+            }
+
             float lsum = l0 + l1 + l2;
 
             l0 /= lsum;
@@ -148,6 +160,84 @@ void render_draw_call(render_target_t render_target, render_command_t command){
           }
         }
       }
+    }
+  }
+}
+
+void render_depth_buffer(render_target_t render_target) {
+  // 1. Define CONSTANTS and RANGES
+  const float float_max = (float)UINT32_MAX;
+
+  // Destination (Viewport) Ranges
+  const uint32_t dst_min_x = render_target.viewport.xmin;
+  const uint32_t dst_max_x = render_target.viewport.xmax;
+  const uint32_t dst_min_y = render_target.viewport.ymin;
+  const uint32_t dst_max_y = render_target.viewport.ymax;
+  const uint64_t dst_range_x = (uint64_t)dst_max_x - dst_min_x;
+  const uint64_t dst_range_y = (uint64_t)dst_max_y - dst_min_y;
+
+  // Source (Depth Buffer) Ranges
+  const uint32_t src_min_x = 0;
+  const uint32_t src_max_x = render_target.depth_buffer.width - 1;
+  const uint32_t src_min_y = 0;
+  const uint32_t src_max_y = render_target.depth_buffer.height - 1;
+  const uint64_t src_range_x = (uint64_t)src_max_x - src_min_x;
+  const uint64_t src_range_y = (uint64_t)src_max_y - src_min_y;
+
+  // Get buffer width for 1D indexing
+  const uint32_t buffer_width = render_target.color_buffer.width;
+  const uint32_t depth_buffer_width = render_target.depth_buffer.width;
+
+
+  // 2. Iterate over DESTINATION (Viewport) Coordinates
+  for (uint32_t y = dst_min_y; y < dst_max_y; y++) {
+    // Calculate the mapping for Y-coordinate
+    
+    // Shifted Y = (Current Y - dst_min_y)
+    uint64_t shifted_y = (uint64_t)y - dst_min_y;
+    
+    // Bias for rounding to nearest integer: dst_range_y / 2
+    uint64_t bias_y = dst_range_y / 2;
+    
+    // Calculate Source Y: (shifted_y * src_range_y + bias_y) / dst_range_y + src_min_y
+    uint32_t src_y = (uint32_t)(((shifted_y * src_range_y) + bias_y) / dst_range_y + src_min_y);
+    
+    // Pre-calculate the row offset for the Source Depth Buffer
+    uint32_t src_row_offset = src_y * depth_buffer_width;
+    uint32_t dst_row_offset = y * buffer_width; 
+
+    
+    for (uint32_t x = dst_min_x; x < dst_max_x; x++) {
+      
+      // Calculate the mapping for X-coordinate
+      uint64_t shifted_x = (uint64_t)x - dst_min_x;
+      uint64_t bias_x = dst_range_x / 2;
+      uint32_t src_x = (uint32_t)(((shifted_x * src_range_x) + bias_x) / dst_range_x + src_min_x);
+      
+      // Calculate the 1D index for the Source Depth Buffer
+      uint32_t src_index = src_row_offset + src_x;
+
+      // Calculate the 1D index for the Destination Color Buffer
+      uint32_t dst_index = dst_row_offset + x;
+      
+      // 3. READ, NORMALIZE, and WRITE
+      
+      // Read depth from the calculated source coordinate
+      uint32_t depth_val = render_target.depth_buffer.depth_values[src_index];
+      
+      // Normalize depth to [0.0f, 1.0f]
+      float float_val = (float)depth_val;
+      float nrm_red_linear = float_val / float_max; 
+      
+      const float gamma = 1.5;
+
+      float nrm_red = powf(nrm_red_linear, gamma);
+
+      // Set pixel color
+      vec4f_t pixel_color = {nrm_red, 0.0f, 0.0f, 1.0f};
+
+      // Write the color to the destination viewport coordinate
+      render_target.color_buffer.pixels[dst_index] = vec4f_to_color(pixel_color);
     }
   }
 }

@@ -2,6 +2,7 @@
 #define RCMD_H
 
 #include "mesh.h"
+#include "depthbuffer.h"
 
 typedef enum{
   NONE,
@@ -12,6 +13,7 @@ typedef enum{
 typedef struct{
   mesh_t mesh;
   cull_mode_e cull_mode;
+  depth_settings_t depth;
   mat4f_t transform;
 }render_command_t;
 

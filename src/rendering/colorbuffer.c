@@ -5,7 +5,7 @@ void clear_color_buffer(color_buffer_t cb, vec4f_t color){
   
   color_t color_color = vec4f_to_color(color);
 
-  for (int i = 0; i < cb.width * cb.height; i++){
+  for (int i = 0; i < size; i++){
     cb.pixels[i] = color_color;
   }
 }
