@@ -8,6 +8,7 @@
 #include "viewport.h"
 #include "rendertarget.h"
 #include "colorbuffer.h"
+#include "depthbuffer.h"
 #include "rendercommand.h"
 
 void render_draw_call(render_target_t render_target, render_command_t command);

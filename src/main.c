@@ -5,6 +5,7 @@
 
 #include "utils/utils.h"
 #include "rendering/rendering.h"
+#include "core/core.h"
 
 int main(){
   SDL_Init(SDL_INIT_VIDEO);
@@ -81,7 +82,11 @@ int main(){
     if (current_time - last_frame_time >= 1000){
       current_fps = (float)frame_count / ((current_time - last_frame_time) / 1000.f);
       
-      printf("FPS: %2.f\n", current_fps);
+      char fps_str[50];
+
+      int number_idfk = sprintf(fps_str, "%.2f", current_fps);
+
+      engine_log("FPS", fps_str, INFO);
       //printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
 
       frame_count = 0;
