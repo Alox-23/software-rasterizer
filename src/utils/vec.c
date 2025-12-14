@@ -4,54 +4,29 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, a.x, a.y, a.z, a.w);
 }
 
-//color
-color_t vec4f_to_color(vec4f_t v){
-  uint8_t components[4] = {};
-
+//basic arithmetic but pointers hehehe
+void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
   for (int i = 0; i < 4; i++){
-    components[i] = (uint8_t)(fmin(fmax(v.v[i], 0.f), 1.f) * 255.f);
+    r->v[i] = a->v[i] + b->v[i];
   }
-
-  return make_color(components[0], components[1], components[2], components[3]);
 }
 
-color_t make_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
-  return (color_t)r |
-         ((color_t)g << 8) |
-         ((color_t)b << 16) |
-         ((color_t)a << 24);
+void psub_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a->v[i] - b->v[i];
+  }
 }
 
-uint8_t get_r(color_t c){
-  return (uint8_t)(c & 0xFF);
+void pmul_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a->v[i] * b->v[i];
+  }
 }
 
-uint8_t get_g(color_t c){
-  return (uint8_t)((c >> 8) & 0xFF);
-}
-
-uint8_t get_b(color_t c){
-  return (uint8_t)((c >> 16) & 0xFF);
-}
-
-uint8_t get_a(color_t c){
-  return (uint8_t)((c >> 24) & 0xFF);
-}
-
-void set_r(color_t *c, uint8_t new_val){
-  *c = (*c & ~0xFF) | new_val;
-}
-
-void set_g(color_t *c, uint8_t new_val){
-  *c = (*c & ~(0xFF << 8)) | ((color_t)new_val << 8);
-}
-
-void set_b(color_t *c, uint8_t new_val){
-  *c = (*c & ~(0xFF << 16)) | ((color_t)new_val << 16);
-}
-
-void set_a(color_t *c, uint8_t new_val){
-  *c = (*c & ~(0xFF << 24)) | ((color_t)new_val << 24);
+void pscl_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, float s){
+  for (int i = 0; i < 4; i++){
+    r->v[i] = a->v[i] * s;
+  }
 }
 
 // basic arithmetic

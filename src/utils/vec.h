@@ -20,21 +20,13 @@ typedef union{
   float v[4];
 } vec4f_t;
 
-typedef uint32_t color_t;
-
 void print_vec4f(char* name, vec4f_t a);
 
-//color
-color_t vec4f_to_color(vec4f_t v);
-color_t make_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-uint8_t get_r(color_t c);
-uint8_t get_g(color_t c);
-uint8_t get_b(color_t c);
-uint8_t get_a(color_t c);
-void set_r(color_t *c, uint8_t new_value);
-void set_g(color_t *c, uint8_t new_value);
-void set_b(color_t *c, uint8_t new_value);
-void set_a(color_t *c, uint8_t new_value);
+//basic arithmetic but pointers hehehe
+void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a + b
+void psub_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a - b 
+void pmul_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a * b
+void pscl_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, float s); // returns a * s
 
 //basic arithmetic
 vec4f_t add_vec4f(vec4f_t a, vec4f_t b); // returns a + b
@@ -58,6 +50,5 @@ vec4f_t max_vec4f(vec4f_t a, vec4f_t b); // max of a, b
 vec4f_t flr_vec4f(vec4f_t a); // floor a
 vec4f_t cil_vec4f(vec4f_t a); // ciel a
 vec4f_t abs_vec4f(vec4f_t a); // abs a
-
 
 #endif

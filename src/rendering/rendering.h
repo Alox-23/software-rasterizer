@@ -11,5 +11,6 @@
 #include "rendercommand.h"
 
 void render_draw_call(render_target_t render_target, render_command_t command);
+void render_draw_call_old(render_target_t render_target, render_command_t command);
 
 #endif
