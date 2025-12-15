@@ -10,13 +10,14 @@
 int main(){
   SDL_Init(SDL_INIT_VIDEO);
 
-  int width = 800;
-  int height = 600;
+  int width = 500;
+  int height = 500;
 
   SDL_Window *window = SDL_CreateWindow("Alexander Kuznetsov's Software Rasterizer!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
 
   SDL_Surface *draw_surface = NULL;
   depth_buffer_t db = {};
+  alloc_depth_buffer(&db, width, height);
 
   Uint32 last_time = SDL_GetTicks();
   Uint32 last_frame_time = SDL_GetTicks();
@@ -67,16 +68,27 @@ int main(){
             height = event.window.data2;
 
             free_depth_buffer(&db);
-
+            alloc_depth_buffer(&db, width, height);
+            
             break;
         }
       }
       if (event.type == SDL_MOUSEMOTION){
         mouse_y = event.motion.y;
         mouse_x = event.motion.x;
-        break;
       }
     }
+
+    if (!draw_surface){
+      draw_surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
+      SDL_SetSurfaceBlendMode(draw_surface, SDL_BLENDMODE_NONE);
+    }
+ 
+    color_buffer_t cb = {
+      .pixels = (color_t*)draw_surface->pixels,
+      .width = (uint32_t)width,
+      .height = (uint32_t)height,
+    };
 
     frame_count++;
     Uint32 current_time = SDL_GetTicks();
@@ -91,28 +103,12 @@ int main(){
       int number_idfk = sprintf(fps_str, "%.2f", current_fps);
 
       engine_log("FPS", fps_str, INFO);
-      //printf("rot = %.2f, pdx = %.2f, pdz = %.2f\n", rot, pdx, pdz);
+      printf("db.width: %d, cb.width: %d\n", db.width, cb.width);
 
       frame_count = 0;
       last_frame_time = current_time;
     }
-    
-
-    if (!draw_surface){
-      draw_surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
-      SDL_SetSurfaceBlendMode(draw_surface, SDL_BLENDMODE_NONE);
-    }
-
-    if (!db.depth_values){
-      alloc_depth_buffer(&db, width, height);
-    }
-
-    color_buffer_t cb = {
-      .pixels = (color_t*)draw_surface->pixels,
-      .width = (uint32_t)width,
-      .height = (uint32_t)height,
-    };
-
+       
     render_target_t rt = {
       .color_buffer = cb,
       .depth_buffer = db,
@@ -130,8 +126,8 @@ int main(){
       .viewport = {
         0,
         0,
-        200,
-        200,
+        100,
+        100,
       },
     };
 

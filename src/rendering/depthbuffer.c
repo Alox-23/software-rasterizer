@@ -32,6 +32,11 @@ void free_depth_buffer(depth_buffer_t* db){
 };
 
 void clear_depth_buffer(depth_buffer_t db, uint32_t value){
+  if (!db.depth_values){
+    engine_log("DEPTH_BUFFER", "Invalid db->depth_values pointer in clear_depth_buffer()", ERROR);
+    return;
+  }
+
   int size = db.width * db.height;  
 
   for (int i = 0; i < size; i++){

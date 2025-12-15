@@ -1,6 +1,10 @@
 #include "rendering.h"
 
 void render_draw_call(render_target_t render_target, render_command_t command){
+  if (!render_target.depth_buffer.depth_values || !render_target.color_buffer.pixels){
+    engine_log("RENDERING", "Invalid pointers to pixel data and depth buffer in render_draw_call", ERROR);
+  }
+
   for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh.count; vertex_index += 3){
     uint32_t i0 = vertex_index + 0;
     uint32_t i1 = vertex_index + 1;
@@ -165,10 +169,8 @@ void render_draw_call(render_target_t render_target, render_command_t command){
 }
 
 void render_depth_buffer(render_target_t render_target) {
-  // 1. Define CONSTANTS and RANGES
   const float float_max = (float)UINT32_MAX;
 
-  // Destination (Viewport) Ranges
   const uint32_t dst_min_x = render_target.viewport.xmin;
   const uint32_t dst_max_x = render_target.viewport.xmax;
   const uint32_t dst_min_y = render_target.viewport.ymin;
@@ -176,70 +178,50 @@ void render_depth_buffer(render_target_t render_target) {
   const uint64_t dst_range_x = (uint64_t)dst_max_x - dst_min_x;
   const uint64_t dst_range_y = (uint64_t)dst_max_y - dst_min_y;
 
-  // Source (Depth Buffer) Ranges
   const uint32_t src_min_x = 0;
-  const uint32_t src_max_x = render_target.depth_buffer.width - 1;
+  const uint32_t src_max_x = render_target.depth_buffer.width;
   const uint32_t src_min_y = 0;
-  const uint32_t src_max_y = render_target.depth_buffer.height - 1;
+  const uint32_t src_max_y = render_target.depth_buffer.height;
   const uint64_t src_range_x = (uint64_t)src_max_x - src_min_x;
   const uint64_t src_range_y = (uint64_t)src_max_y - src_min_y;
 
-  // Get buffer width for 1D indexing
   const uint32_t buffer_width = render_target.color_buffer.width;
   const uint32_t depth_buffer_width = render_target.depth_buffer.width;
 
-
-  // 2. Iterate over DESTINATION (Viewport) Coordinates
   for (uint32_t y = dst_min_y; y < dst_max_y; y++) {
-    // Calculate the mapping for Y-coordinate
     
-    // Shifted Y = (Current Y - dst_min_y)
     uint64_t shifted_y = (uint64_t)y - dst_min_y;
     
-    // Bias for rounding to nearest integer: dst_range_y / 2
     uint64_t bias_y = dst_range_y / 2;
     
-    // Calculate Source Y: (shifted_y * src_range_y + bias_y) / dst_range_y + src_min_y
     uint32_t src_y = (uint32_t)(((shifted_y * src_range_y) + bias_y) / dst_range_y + src_min_y);
     
-    // Pre-calculate the row offset for the Source Depth Buffer
     uint32_t src_row_offset = src_y * depth_buffer_width;
     uint32_t dst_row_offset = y * buffer_width; 
 
-    
     for (uint32_t x = dst_min_x; x < dst_max_x; x++) {
       
-      // Calculate the mapping for X-coordinate
       uint64_t shifted_x = (uint64_t)x - dst_min_x;
       uint64_t bias_x = dst_range_x / 2;
       uint32_t src_x = (uint32_t)(((shifted_x * src_range_x) + bias_x) / dst_range_x + src_min_x);
       
-      // Calculate the 1D index for the Source Depth Buffer
       uint32_t src_index = src_row_offset + src_x;
 
-      // Calculate the 1D index for the Destination Color Buffer
       uint32_t dst_index = dst_row_offset + x;
       
-      // 3. READ, NORMALIZE, and WRITE
-      
-      // Read depth from the calculated source coordinate
       uint32_t depth_val = render_target.depth_buffer.depth_values[src_index];
       if (depth_val == UINT32_MAX){
         render_target.color_buffer.pixels[dst_index] = vec4f_to_color((vec4f_t){0.f, 0.f, 0.f, 1.f});
         continue;
       } 
        
-      // Normalize depth to [0.0f, 1.0f]
       float float_val = (float)depth_val;
       float nrm_red_original = float_val / float_max;
       float nrm_red_scaled = nrm_red_original * 10;
-      //nrm_red += 0.2f;
       float nrm_red_clamped = nrm_red_scaled - floor(nrm_red_scaled);
      
-      // Set pixel color
       vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
 
-      // Write the color to the destination viewport coordinate
       render_target.color_buffer.pixels[dst_index] = vec4f_to_color(pixel_color);
     }
   }
