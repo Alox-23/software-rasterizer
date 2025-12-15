@@ -140,9 +140,9 @@ int main(){
     
     angle += 2 * delta_time;
 
-    for (int i = -2; i < 2; i++){
+    for (int i = -3; i <= 3; i++){
       mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
-      mat4f_t translate = make_translation_mat4f((vec4f_t){i, 0.f, -5.f, 0.f});
+      mat4f_t translate = make_translation_mat4f((vec4f_t){i, i, -i-7, 0.f});
       mat4f_t rotation = make_rotationZX_mat4f(angle);
       mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
       

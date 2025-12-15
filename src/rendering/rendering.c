@@ -224,17 +224,20 @@ void render_depth_buffer(render_target_t render_target) {
       
       // Read depth from the calculated source coordinate
       uint32_t depth_val = render_target.depth_buffer.depth_values[src_index];
-      
+      if (depth_val == UINT32_MAX){
+        render_target.color_buffer.pixels[dst_index] = vec4f_to_color((vec4f_t){0.f, 0.f, 0.f, 1.f});
+        continue;
+      } 
+       
       // Normalize depth to [0.0f, 1.0f]
       float float_val = (float)depth_val;
-      float nrm_red_linear = float_val / float_max; 
-      
-      const float gamma = 1.5;
-
-      float nrm_red = powf(nrm_red_linear, gamma);
-
+      float nrm_red_original = float_val / float_max;
+      float nrm_red_scaled = nrm_red_original * 10;
+      //nrm_red += 0.2f;
+      float nrm_red_clamped = nrm_red_scaled - floor(nrm_red_scaled);
+     
       // Set pixel color
-      vec4f_t pixel_color = {nrm_red, 0.0f, 0.0f, 1.0f};
+      vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
 
       // Write the color to the destination viewport coordinate
       render_target.color_buffer.pixels[dst_index] = vec4f_to_color(pixel_color);
