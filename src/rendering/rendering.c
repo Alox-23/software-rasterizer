@@ -168,7 +168,39 @@ void render_draw_call(render_target_t render_target, render_command_t command){
   }
 }
 
-void render_depth_buffer(render_target_t render_target) {
+void render_depth_buffer(render_target_t rt){
+  float float_max = (float)UINT32_MAX;
+  uint32_t vp_width = rt.viewport.xmax - rt.viewport.xmin;
+  uint32_t vp_height = rt.viewport.ymax - rt.viewport.ymin;
+
+  uint32_t vp_scale_x = rt.color_buffer.width / vp_width;
+  uint32_t vp_scale_y = rt.color_buffer.height / vp_height;
+
+  for (int vp_y = rt.viewport.ymin; vp_y < rt.viewport.ymax; vp_y++){
+    uint32_t rel_y = vp_y - rt.viewport.ymin;
+    uint32_t cb_y = rel_y * vp_scale_y;
+    uint32_t cb_row_offset = rt.color_buffer.height * cb_y;
+    uint32_t vp_row_offset = rt.color_buffer.height * vp_y;
+
+    for (int vp_x = rt.viewport.xmin; vp_x < rt.viewport.xmax; vp_x++){
+      uint32_t rel_x = vp_x - rt.viewport.xmin;
+      uint32_t cb_x = rel_x * vp_scale_x;
+
+      uint32_t value = rt.depth_buffer.depth_values[cb_x + cb_row_offset];
+       
+      float float_val = (float)value;
+      float nrm_red_original = float_val / float_max;
+      float nrm_red_scaled = nrm_red_original * 4;
+      float nrm_red_clamped = nrm_red_scaled - floor(nrm_red_scaled);
+     
+      vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
+
+      rt.color_buffer.pixels[vp_x + vp_row_offset] = vec4f_to_color(pixel_color);
+    }
+  }
+}
+
+void render_depth_buffer2(render_target_t render_target) {
   const float float_max = (float)UINT32_MAX;
 
   const uint32_t dst_min_x = render_target.viewport.xmin;
