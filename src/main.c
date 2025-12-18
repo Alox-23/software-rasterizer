@@ -103,7 +103,6 @@ int main(){
       int number_idfk = sprintf(fps_str, "%.2f", current_fps);
 
       engine_log("FPS", fps_str, INFO);
-      printf("db.width: %d, cb.width: %d\n", db.width, cb.width);
 
       frame_count = 0;
       last_frame_time = current_time;
@@ -134,11 +133,11 @@ int main(){
     clear_color_buffer(cb, (vec4f_t){0.718f, 0.435f, 0.788f, 1.f});
     clear_depth_buffer(db, UINT32_MAX);
     
-    angle += 2 * delta_time;
+    angle += 0.5 * delta_time;
 
-    for (int i = -3; i <= 3; i++){
+    for (int i = -1; i <= 2; i++){
       mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
-      mat4f_t translate = make_translation_mat4f((vec4f_t){i, i, -i-7, 0.f});
+      mat4f_t translate = make_translation_mat4f((vec4f_t){i, i-2, -i-7, 0.f});
       mat4f_t rotation = make_rotationZX_mat4f(angle);
       mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
       
@@ -156,8 +155,6 @@ int main(){
       );
     }
 
-    render_depth_buffer(depth_buffer_render_output);
-    
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
 
