@@ -106,11 +106,6 @@ void render_draw_call(render_target_t render_target, render_command_t command){
           float det_v1_v2_p = det2d_vec4f(edge_v1_v2, edge_v1_p);
           float det_v2_v0_p = det2d_vec4f(edge_v2_v0, edge_v2_p);
 
-          //eliminates overdraw
-          //if (left_or_top_edge(v0, v1)) det_v0_v1_p--; 
-          //if (left_or_top_edge(v1, v2)) det_v1_v2_p--; 
-          //if (left_or_top_edge(v2, v0)) det_v2_v0_p--; 
-        
           if (det_v0_v1_p >= 0.f && det_v1_v2_p >= 0.f && det_v2_v0_p >= 0.f){
             float l0 = det_v1_v2_p / det_v0_v1_v2 / v0.w;
             float l1 = det_v2_v0_p / det_v0_v1_v2 / v1.w;
@@ -153,14 +148,6 @@ void render_draw_call(render_target_t render_target, render_command_t command){
             pixel_color = abs_vec4f(pixel_color);
 
             render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color(pixel_color);
-            /* 
-            if ((int)(floor(pixel_color.x * 8) + floor(pixel_color.y * 8)) % 2 == 0){
-              render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color((vec4f_t){1.f, 0.f, 0.f, 1.f});
-            }
-            else{
-              render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color((vec4f_t){1.f, 1.f, 1.f, 1.f});
-            }
-            */
           }
         }
       }
@@ -196,65 +183,6 @@ void render_depth_buffer(render_target_t rt){
       vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
 
       rt.color_buffer.pixels[vp_x + vp_row_offset] = vec4f_to_color(pixel_color);
-    }
-  }
-}
-
-void render_depth_buffer2(render_target_t render_target) {
-  const float float_max = (float)UINT32_MAX;
-
-  const uint32_t dst_min_x = render_target.viewport.xmin;
-  const uint32_t dst_max_x = render_target.viewport.xmax;
-  const uint32_t dst_min_y = render_target.viewport.ymin;
-  const uint32_t dst_max_y = render_target.viewport.ymax;
-  const uint64_t dst_range_x = (uint64_t)dst_max_x - dst_min_x;
-  const uint64_t dst_range_y = (uint64_t)dst_max_y - dst_min_y;
-
-  const uint32_t src_min_x = 0;
-  const uint32_t src_max_x = render_target.depth_buffer.width;
-  const uint32_t src_min_y = 0;
-  const uint32_t src_max_y = render_target.depth_buffer.height;
-  const uint64_t src_range_x = (uint64_t)src_max_x - src_min_x;
-  const uint64_t src_range_y = (uint64_t)src_max_y - src_min_y;
-
-  const uint32_t buffer_width = render_target.color_buffer.width;
-  const uint32_t depth_buffer_width = render_target.depth_buffer.width;
-
-  for (uint32_t y = dst_min_y; y < dst_max_y; y++) {
-    
-    uint64_t shifted_y = (uint64_t)y - dst_min_y;
-    
-    uint64_t bias_y = dst_range_y / 2;
-    
-    uint32_t src_y = (uint32_t)(((shifted_y * src_range_y) + bias_y) / dst_range_y + src_min_y);
-    
-    uint32_t src_row_offset = src_y * depth_buffer_width;
-    uint32_t dst_row_offset = y * buffer_width; 
-
-    for (uint32_t x = dst_min_x; x < dst_max_x; x++) {
-      
-      uint64_t shifted_x = (uint64_t)x - dst_min_x;
-      uint64_t bias_x = dst_range_x / 2;
-      uint32_t src_x = (uint32_t)(((shifted_x * src_range_x) + bias_x) / dst_range_x + src_min_x);
-      
-      uint32_t src_index = src_row_offset + src_x;
-
-      uint32_t dst_index = dst_row_offset + x;
-      
-      uint32_t depth_val = render_target.depth_buffer.depth_values[src_index];
-      if (depth_val == UINT32_MAX){
-        render_target.color_buffer.pixels[dst_index] = vec4f_to_color((vec4f_t){0.f, 0.f, 0.f, 1.f});
-        continue;
-      } 
-       
-      float float_val = (float)depth_val;
-      float nrm_red_original = float_val / float_max;
-      float nrm_red_scaled = nrm_red_original * 10;
-      float nrm_red_clamped = nrm_red_scaled - floor(nrm_red_scaled);
-     
-      vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
-
-      render_target.color_buffer.pixels[dst_index] = vec4f_to_color(pixel_color);
     }
   }
 }

@@ -2,6 +2,7 @@
 #define MESH_H
 
 #include "../utils/utils.h"
+#include <stdlib.h>
 
 //stores points in 3d space
 //number of triangles in mesh = positions / vertex_count
@@ -12,6 +13,7 @@ typedef struct{
   uint32_t count;
 }mesh_t;
 
-mesh_t make_mesh();
+mesh_t* load_mesh_from_file(const char* filename, vec4f_t color);
+void free_mesh();
 
 #endif
