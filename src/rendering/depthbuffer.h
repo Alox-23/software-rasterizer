@@ -28,8 +28,8 @@ typedef struct{
   uint32_t height;
 } depth_buffer_t;
 
-void alloc_depth_buffer(depth_buffer_t* db, uint32_t width, uint32_t height);
-void free_depth_buffer(depth_buffer_t* db);
+depth_buffer_t alloc_depth_buffer(uint32_t width, uint32_t height);
+void free_depth_buffer(depth_buffer_t db);
 void clear_depth_buffer(depth_buffer_t db, uint32_t value);
 bool depth_test(depth_test_t mode, uint32_t value, uint32_t ref);
 

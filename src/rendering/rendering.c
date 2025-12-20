@@ -5,26 +5,26 @@ void render_draw_call(render_target_t render_target, render_command_t command){
     engine_log("RENDERING", "Invalid pointers to pixel data and depth buffer in render_draw_call", ERROR);
   }
 
-  for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh.count; vertex_index += 3){
+  for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh->count; vertex_index += 3){
     uint32_t i0 = vertex_index + 0;
     uint32_t i1 = vertex_index + 1;
     uint32_t i2 = vertex_index + 2;
 
-    if (command.mesh.indices){
-      i0 = command.mesh.indices[i0];
-      i1 = command.mesh.indices[i1];
-      i2 = command.mesh.indices[i2];
+    if (command.mesh->indices){
+      i0 = command.mesh->indices[i0];
+      i1 = command.mesh->indices[i1];
+      i2 = command.mesh->indices[i2];
     }
     
     vertex clipped_vertices[12]; // stores all of the atributes of a trianlge, for them to be later be cliped
     
-    clipped_vertices[0].position = mul_matvec4f(command.transform, command.mesh.positions[i0]);
-    clipped_vertices[1].position = mul_matvec4f(command.transform, command.mesh.positions[i1]);
-    clipped_vertices[2].position = mul_matvec4f(command.transform, command.mesh.positions[i2]);
+    clipped_vertices[0].position = mul_matvec4f(command.transform, command.mesh->positions[i0]);
+    clipped_vertices[1].position = mul_matvec4f(command.transform, command.mesh->positions[i1]);
+    clipped_vertices[2].position = mul_matvec4f(command.transform, command.mesh->positions[i2]);
 
-    clipped_vertices[0].color = command.mesh.colors[i0];
-    clipped_vertices[1].color = command.mesh.colors[i1];  
-    clipped_vertices[2].color = command.mesh.colors[i2];
+    clipped_vertices[0].color = command.mesh->colors[i0];
+    clipped_vertices[1].color = command.mesh->colors[i1];  
+    clipped_vertices[2].color = command.mesh->colors[i2];
 
     vertex* clipped_vertices_end = clip_triangle(clipped_vertices, clipped_vertices + 3);
     

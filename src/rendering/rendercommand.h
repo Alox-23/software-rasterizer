@@ -11,7 +11,7 @@ typedef enum{
 }cull_mode_e;
 
 typedef struct{
-  mesh_t mesh;
+  mesh_t *mesh;
   cull_mode_e cull_mode;
   depth_settings_t depth;
   mat4f_t transform;

@@ -16,8 +16,7 @@ int main(){
   SDL_Window *window = SDL_CreateWindow("Alexander Kuznetsov's Software Rasterizer!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
 
   SDL_Surface *draw_surface = NULL;
-  depth_buffer_t db = {};
-  alloc_depth_buffer(&db, width, height);
+  depth_buffer_t db = alloc_depth_buffer(width, height);
 
   Uint32 last_time = SDL_GetTicks();
   Uint32 last_frame_time = SDL_GetTicks();
@@ -36,6 +35,8 @@ int main(){
   float rspeed = 3;
   
   float angle = 1;
+  
+  mesh_t* mesh = load_mesh_from_file("assets/models/human_test.obj", (vec4f_t){1.f, 0.f, 0.f, 1.f});
   
   bool running = true;
   while(running){
@@ -67,8 +68,8 @@ int main(){
             width = event.window.data1;
             height = event.window.data2;
 
-            free_depth_buffer(&db);
-            alloc_depth_buffer(&db, width, height);
+            free_depth_buffer(db);
+            db = alloc_depth_buffer(width, height);
             
             break;
         }
@@ -133,27 +134,27 @@ int main(){
     clear_color_buffer(cb, (vec4f_t){0.718f, 0.435f, 0.788f, 1.f});
     clear_depth_buffer(db, UINT32_MAX);
     
-    angle += 0.5 * delta_time;
+    angle += 2.f * delta_time;
 
-    for (int i = -1; i <= 2; i++){
-      mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
-      mat4f_t translate = make_translation_mat4f((vec4f_t){i, i-2, -i-7, 0.f});
-      mat4f_t rotation = make_rotationZX_mat4f(angle);
-      mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
-      
-      render_draw_call(
-        rt,
-        (render_command_t){
-          .mesh = make_cube_mesh(),
-          .cull_mode = CW,
-          .depth = {
-            .write = true,
-            .mode = LESS,
-          },
-          .transform = final,
-        }
-      );
-    }
+    mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, -10.f, -20.f, 0.f});
+    mat4f_t rotation = make_rotationZX_mat4f(angle);
+    mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
+   
+    render_draw_call(
+      rt,
+      (render_command_t){
+        .mesh = mesh,
+        .cull_mode = NONE,
+        .depth = {
+          .write = true,
+          .mode = LESS,
+        },
+        .transform = final,
+      }
+    );
+
+    //render_depth_buffer(depth_buffer_render_output);
 
     SDL_Rect rect = {.x = 0, .y = 0, .w = width, .h = height};
     SDL_BlitSurface(draw_surface, &rect, SDL_GetWindowSurface(window), &rect);
@@ -162,7 +163,8 @@ int main(){
   }
 
   SDL_FreeSurface(draw_surface);
-  free_depth_buffer(&db);
+  free_depth_buffer(db);
+  free_mesh(mesh);
 
   return 0;
 }

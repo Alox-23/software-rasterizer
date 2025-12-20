@@ -41,7 +41,7 @@ mesh_t* load_mesh_from_file(const char* filename, vec4f_t color){
       float x, y, z;
       sscanf(line, "v %f %f %f", &x, &y, &z);
       mesh->positions[vertex_i] = (vec4f_t){x, y, z, 1.f};
-      mesh->colors[vertex_i] = color;
+      mesh->colors[vertex_i] = make_random_vec4f();
       vertex_i++;
     }
     //case face
