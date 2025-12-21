@@ -28,20 +28,24 @@ int main(){
   int mouse_y = 0;
 
   float pdx;
-  float pdz;
+  float pdz = 50.f;
   float pdy;
-  float speed = 10;
+  float speed = 50;
   float rot = 0;
+  float yrot = 0;
   float rspeed = 3;
   
   float angle = 1;
   
-  mesh_t* mesh = load_mesh_from_file("assets/models/human_test.obj", (vec4f_t){1.f, 0.f, 0.f, 1.f});
+  mesh_t* castle_mesh = load_mesh_from_file("assets/models/castle_test.obj", (vec4f_t){0.f, 0.f, 0.f, 0.f});
+  mesh_t* human_mesh = load_mesh_from_file("assets/models/human_test.obj", (vec4f_t){1.f, 0.f, 0.f, 1.f});
   
   bool running = true;
   while(running){
     const Uint8* state = SDL_GetKeyboardState(NULL);
 
+    if (state[SDL_SCANCODE_DOWN]) yrot -= rspeed * delta_time;
+    if (state[SDL_SCANCODE_UP]) yrot += rspeed * delta_time;
     if (state[SDL_SCANCODE_LEFT]) rot -= rspeed * delta_time;
     if (state[SDL_SCANCODE_RIGHT]) rot += rspeed * delta_time;
     if (state[SDL_SCANCODE_W]) pdz += speed * delta_time;
@@ -134,23 +138,39 @@ int main(){
     clear_color_buffer(cb, (vec4f_t){0.718f, 0.435f, 0.788f, 1.f});
     clear_depth_buffer(db, UINT32_MAX);
     
-    angle += 2.f * delta_time;
+    angle += 0.5 * delta_time;
 
-    mat4f_t perspective = make_perspective_mat4f(0.5f, 100.f, M_PI / 3.f, width * 1.f / height);
-    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, -10.f, -20.f, 0.f});
-    mat4f_t rotation = make_rotationZX_mat4f(angle);
-    mat4f_t final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
+    mat4f_t perspective = make_perspective_mat4f(0.5f, 1000.f, M_PI / 3.f, width * 1.f / height);
+    mat4f_t translate = make_translation_mat4f((vec4f_t){0.f, -10.f, -pdz, 0.f});
+    mat4f_t rotation_zx = make_rotationZX_mat4f(angle);
+    mat4f_t rotation_zy = make_rotationYZ_mat4f(yrot);
+    mat4f_t rotation = mul_mat4f(rotation_zy, rotation_zx);
+    mat4f_t castle_final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
+    mat4f_t human_final = mul_mat4f(perspective, mul_mat4f(translate, rotation));
    
     render_draw_call(
       rt,
       (render_command_t){
-        .mesh = mesh,
-        .cull_mode = NONE,
+        .mesh = human_mesh,
+        .cull_mode = CW,
         .depth = {
           .write = true,
           .mode = LESS,
         },
-        .transform = final,
+        .transform = human_final,
+      }
+    );
+    
+    render_draw_call(
+      rt,
+      (render_command_t){
+        .mesh = castle_mesh,
+        .cull_mode = CW,
+        .depth = {
+          .write = true,
+          .mode = LESS,
+        },
+        .transform = castle_final,
       }
     );
 
@@ -164,7 +184,8 @@ int main(){
 
   SDL_FreeSurface(draw_surface);
   free_depth_buffer(db);
-  free_mesh(mesh);
+  free_mesh(castle_mesh);
+  free_mesh(human_mesh);
 
   return 0;
 }

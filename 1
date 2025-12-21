@@ -1,5 +1,4 @@
 #include "mesh.h"
-
 mesh_t* load_mesh_from_file(const char* filename, vec4f_t color) {
     mesh_t* mesh = calloc(1, sizeof(mesh_t));
     
@@ -98,37 +97,16 @@ mesh_t* load_mesh_from_file(const char* filename, vec4f_t color) {
     fclose(file);
     
     // Set index count
-    mesh->count = idx_idx;
+    mesh->index_count = idx_idx;
     
     // Apply color to all vertices
-    vec4f_t temp_vec = (vec4f_t){0.f, 0.f, 0.f, 0.f};
-    if (color.x == temp_vec.x && color.y == temp_vec.x && color.z == temp_vec.z && color.w == temp_vec.w){
-      for (int i = 0; i < vertex_count; i++) {
-          mesh->colors[i] = make_random_vec4f();
-      }
-    }
-    else{
-      for (int i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++) {
         mesh->colors[i] = color;
-      }
     }
     
     return mesh;
 }
 
-void free_mesh(mesh_t* mesh){
-  if (!mesh || !mesh->positions || !mesh->colors || !mesh->indices){
-    engine_log("MESH", "Invalid mesh pointer during free_mesh", ERROR);
-    return;
-  }
-  
-  free(mesh->positions);
-  free(mesh->colors);
-  free(mesh->indices);
-  free(mesh);
-}
-
-/*
 mesh_t* load_mesh_from_file(const char* filename, vec4f_t color){
   mesh_t* mesh = calloc(1, sizeof(mesh_t));
 
@@ -205,4 +183,15 @@ mesh_t* load_mesh_from_file(const char* filename, vec4f_t color){
   
   return mesh;
 }
-*/
+
+void free_mesh(mesh_t* mesh){
+  if (!mesh || !mesh->positions || !mesh->colors || !mesh->indices){
+    engine_log("MESH", "Invalid mesh pointer during free_mesh", ERROR);
+    return;
+  }
+  
+  free(mesh->positions);
+  free(mesh->colors);
+  free(mesh->indices);
+  free(mesh);
+}
