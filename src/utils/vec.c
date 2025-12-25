@@ -4,6 +4,18 @@ void print_vec4f(char* name, vec4f_t a){
   printf("%s = (%f, %f, %f, %f)\n", name, a.x, a.y, a.z, a.w);
 }
 
+vec4f_t make_random_vec4f(){
+  int rand_x = rand();
+  int rand_y = rand();
+  int rand_z = rand();
+  
+  float x = (float)rand_x / RAND_MAX;
+  float y = (float)rand_y / RAND_MAX;
+  float z = (float)rand_z / RAND_MAX;
+
+  return (vec4f_t){x, y, z, 1.f};
+};
+
 //basic arithmetic but pointers hehehe
 void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b){
   for (int i = 0; i < 4; i++){

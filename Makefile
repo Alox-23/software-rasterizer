@@ -8,6 +8,7 @@ TARGET = bin/main
 SOURCES = src/main.c \
 					src/core/engine.c \
 					src/core/memory.c \
+					src/core/error.c \
 					src/utils/vec.c \
 					src/utils/color.c \
 					src/utils/mat.c \
@@ -16,6 +17,7 @@ SOURCES = src/main.c \
 					src/rendering/cube.c \
 					src/rendering/rendertarget.c \
 					src/rendering/colorbuffer.c \
+					src/rendering/depthbuffer.c \
 					src/rendering/viewport.c \
 					src/rendering/rendercommand.c \
 					src/rendering/rendering.c \

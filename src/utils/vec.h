@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <math.h>
 
 //x and v[0] share the same memory location 
@@ -21,6 +22,7 @@ typedef union{
 } vec4f_t;
 
 void print_vec4f(char* name, vec4f_t a);
+vec4f_t make_random_vec4f();
 
 //basic arithmetic but pointers hehehe
 void padd_vec4f(vec4f_t* restrict r, vec4f_t* restrict a, vec4f_t* restrict b); // returns a + b

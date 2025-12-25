@@ -1,26 +1,30 @@
 #include "rendering.h"
 
 void render_draw_call(render_target_t render_target, render_command_t command){
-  for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh.count; vertex_index += 3){
+  if (!render_target.depth_buffer.depth_values || !render_target.color_buffer.pixels){
+    engine_log("RENDERING", "Invalid pointers to pixel data and depth buffer in render_draw_call", ERROR);
+  }
+
+  for (uint32_t vertex_index = 0; vertex_index + 2 < command.mesh->count; vertex_index += 3){
     uint32_t i0 = vertex_index + 0;
     uint32_t i1 = vertex_index + 1;
     uint32_t i2 = vertex_index + 2;
 
-    if (command.mesh.indices){
-      i0 = command.mesh.indices[i0];
-      i1 = command.mesh.indices[i1];
-      i2 = command.mesh.indices[i2];
+    if (command.mesh->indices){
+      i0 = command.mesh->indices[i0];
+      i1 = command.mesh->indices[i1];
+      i2 = command.mesh->indices[i2];
     }
     
     vertex clipped_vertices[12]; // stores all of the atributes of a trianlge, for them to be later be cliped
     
-    clipped_vertices[0].position = mul_matvec4f(command.transform, command.mesh.positions[i0]);
-    clipped_vertices[1].position = mul_matvec4f(command.transform, command.mesh.positions[i1]);
-    clipped_vertices[2].position = mul_matvec4f(command.transform, command.mesh.positions[i2]);
+    clipped_vertices[0].position = mul_matvec4f(command.transform, command.mesh->positions[i0]);
+    clipped_vertices[1].position = mul_matvec4f(command.transform, command.mesh->positions[i1]);
+    clipped_vertices[2].position = mul_matvec4f(command.transform, command.mesh->positions[i2]);
 
-    clipped_vertices[0].color = command.mesh.colors[i0];
-    clipped_vertices[1].color = command.mesh.colors[i1];  
-    clipped_vertices[2].color = command.mesh.colors[i2];
+    clipped_vertices[0].color = command.mesh->colors[i0];
+    clipped_vertices[1].color = command.mesh->colors[i1];  
+    clipped_vertices[2].color = command.mesh->colors[i2];
 
     vertex* clipped_vertices_end = clip_triangle(clipped_vertices, clipped_vertices + 3);
     
@@ -102,15 +106,22 @@ void render_draw_call(render_target_t render_target, render_command_t command){
           float det_v1_v2_p = det2d_vec4f(edge_v1_v2, edge_v1_p);
           float det_v2_v0_p = det2d_vec4f(edge_v2_v0, edge_v2_p);
 
-          //eliminates overdraw
-          //if (left_or_top_edge(v0, v1)) det_v0_v1_p--; 
-          //if (left_or_top_edge(v1, v2)) det_v1_v2_p--; 
-          //if (left_or_top_edge(v2, v0)) det_v2_v0_p--; 
-        
           if (det_v0_v1_p >= 0.f && det_v1_v2_p >= 0.f && det_v2_v0_p >= 0.f){
             float l0 = det_v1_v2_p / det_v0_v1_v2 / v0.w;
             float l1 = det_v2_v0_p / det_v0_v1_v2 / v1.w;
             float l2 = det_v0_v1_p / det_v0_v1_v2 / v2.w;
+
+            //depth test 
+            if (render_target.depth_buffer.depth_values){
+              float z = l0 * v0.z + l1 * v1.z + l2* v2.z;
+
+              uint32_t depth = (0.5f + 0.5f * z) * UINT32_MAX;
+
+              uint32_t* old_depth_ptr = &render_target.depth_buffer.depth_values[x + y * render_target.depth_buffer.height];
+              uint32_t old_depth = *old_depth_ptr;
+              if (!depth_test(command.depth.mode, depth, old_depth)) continue;
+              if (command.depth.write) *old_depth_ptr = depth;
+            }
 
             float lsum = l0 + l1 + l2;
 
@@ -137,17 +148,41 @@ void render_draw_call(render_target_t render_target, render_command_t command){
             pixel_color = abs_vec4f(pixel_color);
 
             render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color(pixel_color);
-            /* 
-            if ((int)(floor(pixel_color.x * 8) + floor(pixel_color.y * 8)) % 2 == 0){
-              render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color((vec4f_t){1.f, 0.f, 0.f, 1.f});
-            }
-            else{
-              render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color((vec4f_t){1.f, 1.f, 1.f, 1.f});
-            }
-            */
           }
         }
       }
+    }
+  }
+}
+
+void render_depth_buffer(render_target_t rt){
+  float float_max = (float)UINT32_MAX;
+  uint32_t vp_width = rt.viewport.xmax - rt.viewport.xmin;
+  uint32_t vp_height = rt.viewport.ymax - rt.viewport.ymin;
+
+  uint32_t vp_scale_x = rt.color_buffer.width / vp_width;
+  uint32_t vp_scale_y = rt.color_buffer.height / vp_height;
+
+  for (int vp_y = rt.viewport.ymin; vp_y < rt.viewport.ymax; vp_y++){
+    uint32_t rel_y = vp_y - rt.viewport.ymin;
+    uint32_t cb_y = rel_y * vp_scale_y;
+    uint32_t cb_row_offset = rt.color_buffer.height * cb_y;
+    uint32_t vp_row_offset = rt.color_buffer.height * vp_y;
+
+    for (int vp_x = rt.viewport.xmin; vp_x < rt.viewport.xmax; vp_x++){
+      uint32_t rel_x = vp_x - rt.viewport.xmin;
+      uint32_t cb_x = rel_x * vp_scale_x;
+
+      uint32_t value = rt.depth_buffer.depth_values[cb_x + cb_row_offset];
+       
+      float float_val = (float)value;
+      float nrm_red_original = float_val / float_max;
+      float nrm_red_scaled = nrm_red_original * 4;
+      float nrm_red_clamped = nrm_red_scaled - floor(nrm_red_scaled);
+     
+      vec4f_t pixel_color = {1.f, nrm_red_clamped, nrm_red_clamped, 1.0f};
+
+      rt.color_buffer.pixels[vp_x + vp_row_offset] = vec4f_to_color(pixel_color);
     }
   }
 }
