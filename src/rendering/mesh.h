@@ -14,7 +14,7 @@ typedef struct{
   uint32_t count;
 }mesh_t;
 
-mesh_t* load_mesh_from_file(const char* filename, vec4f_t color);
+mesh_t* load_mesh_from_file(const char* filename, vec4f_t color, mat4f_t transform);
 void free_mesh();
 
 #endif

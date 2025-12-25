@@ -37,8 +37,11 @@ int main(){
   
   float angle = 1;
   
-  mesh_t* castle_mesh = load_mesh_from_file("assets/models/castle_test.obj", (vec4f_t){0.f, 0.f, 0.f, 0.f});
-  mesh_t* human_mesh = load_mesh_from_file("assets/models/human_test.obj", (vec4f_t){1.f, 0.f, 0.f, 1.f});
+  mat4f_t scale = make_scale_mat4f((vec4f_t){0.05f, 0.05f, 0.05f, 0.05f});
+  mat4f_t scale2 = make_scale_mat4f((vec4f_t){0.5f, 0.5f, 0.5f, 0.5f});
+  
+  mesh_t* castle_mesh = load_mesh_from_file("assets/models/castle_test.obj", (vec4f_t){0.f, 0.f, 0.f, 0.f}, scale2);
+  mesh_t* human_mesh = load_mesh_from_file("assets/models/low_poly_human_test.obj", (vec4f_t){0.f, 0.f, 0.f, 0.f}, scale);
   
   bool running = true;
   while(running){
@@ -160,7 +163,7 @@ int main(){
         .transform = human_final,
       }
     );
-    
+
     render_draw_call(
       rt,
       (render_command_t){
