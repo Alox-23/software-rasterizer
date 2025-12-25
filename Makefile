@@ -45,6 +45,9 @@ debug: $(TARGET)
 release: CFLAGS += -DNDEBUG
 release: $(TARGET)
 
+test:
+	python3 src/tests/test.py
+
 asan: CFLAGS += -g -O1 -fsanitize=address
 asan: LDFLAGS += -fsanitize=address
 asan: $(TARGET)
