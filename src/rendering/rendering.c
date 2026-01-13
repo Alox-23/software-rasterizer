@@ -155,7 +155,6 @@ void render_draw_call(render_target_t render_target, render_command_t command){
   }
 }
 
-/*
 void render_draw_call2(render_target_t render_target, render_command_t command) {
   if (!render_target.depth_buffer.depth_values || !render_target.color_buffer.pixels){
     engine_log("RENDERING", "Invalid pointers to pixel data and depth buffer in render_draw_call", ERROR);
@@ -257,7 +256,7 @@ void render_draw_call2(render_target_t render_target, render_command_t command) 
       ymin = fmax(0, fmin(v0.y, fmin(v1.y, v2.y)));
       ymax = fmin(render_target.color_buffer.height, fmax(v0.y, fmax(v1.y, v2.y)));
 
-      int tile_count = 1;
+      int tile_count = 5;
       int tile_width = (xmax - xmin) / tile_count;
       int tile_height = (ymax - ymin) / tile_count;
 
@@ -307,10 +306,68 @@ void render_draw_call2(render_target_t render_target, render_command_t command) 
 
           //tile needs to be filled up completely
           if (tile_v0_check && tile_v1_check && tile_v2_check && tile_v3_check){
-            return;          
+            for (int32_t y = tile_y; y < tile_v2.y; ++y){
+              uint32_t row_offset = y * render_target.color_buffer.width;
+              
+              for (int32_t x = tile_x; x < tile_v2.x; ++x){
+                vec4f_t p = {x+0.8f,y+0.8f, 0.f, 0.f};
+
+                psub_vec4f(&edge_v0_p, &p, &v0);
+                psub_vec4f(&edge_v1_p, &p, &v1);
+                psub_vec4f(&edge_v2_p, &p, &v2);
+
+                float det_v0_v1_p = det2d_vec4f(edge_v0_v1, edge_v0_p);
+                float det_v1_v2_p = det2d_vec4f(edge_v1_v2, edge_v1_p);
+                float det_v2_v0_p = det2d_vec4f(edge_v2_v0, edge_v2_p);
+
+                if (det_v0_v1_p >= 0.f && det_v1_v2_p >= 0.f && det_v2_v0_p >= 0.f){
+                  float l0 = det_v1_v2_p / det_v0_v1_v2 / v0.w;
+                  float l1 = det_v2_v0_p / det_v0_v1_v2 / v1.w;
+                  float l2 = det_v0_v1_p / det_v0_v1_v2 / v2.w;
+
+                  //depth test 
+                  if (render_target.depth_buffer.depth_values){
+                    float z = l0 * v0.z + l1 * v1.z + l2* v2.z;
+
+                    uint32_t depth = (0.5f + 0.5f * z) * UINT32_MAX;
+
+                    uint32_t* old_depth_ptr = &render_target.depth_buffer.depth_values[x + y * render_target.depth_buffer.height];
+                    uint32_t old_depth = *old_depth_ptr;
+                    if (!depth_test(command.depth.mode, depth, old_depth)) continue;
+                    if (command.depth.write) *old_depth_ptr = depth;
+                  }
+
+                  float lsum = l0 + l1 + l2;
+
+                  l0 /= lsum;
+                  l1 /= lsum;
+                  l2 /= lsum;
+
+                  vec4f_t c0l0 = {};
+                  vec4f_t c1l1 = {};
+                  vec4f_t c2l2 = {};
+
+                  pscl_vec4f(&c0l0, &c0, l0);
+                  pscl_vec4f(&c1l1, &c1, l1);
+                  pscl_vec4f(&c2l2, &c2, l2);
+
+                  vec4f_t c1l1_c2l2 = {};
+
+                  padd_vec4f(&c1l1_c2l2, &c1l1, &c2l2);
+
+                  vec4f_t pixel_color = {};
+
+                  padd_vec4f(&pixel_color, &c0l0, &c1l1_c2l2);
+
+                  pixel_color = abs_vec4f(pixel_color);
+
+                  render_target.color_buffer.pixels[x + row_offset] = vec4f_to_color(pixel_color);
+                }
+              }
+            }
           }
           //not a single point is in the triangle - skip the tile
-          else if(!tile_v0_check && !tile_v1_check && !tile_v2_check &&!tile_v3_check){
+          else if(!tile_v0_check && !tile_v1_check && !tile_v2_check && !tile_v3_check){
             return;
           }
           //some points are in triangle, tile needs per-pixel maths
@@ -374,7 +431,6 @@ void render_draw_call2(render_target_t render_target, render_command_t command) 
     }
   }
 }
-*/
 
 void render_depth_buffer(render_target_t rt){
   float float_max = (float)UINT32_MAX;
